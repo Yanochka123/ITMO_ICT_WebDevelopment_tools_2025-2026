@@ -27,6 +27,7 @@ class SkillWarriorLink(SQLModel, table=True):
         primary_key=True,
         description="ID воина"
     )
+    level: int | None
 
 
 class Skill(SQLModel, table=True):

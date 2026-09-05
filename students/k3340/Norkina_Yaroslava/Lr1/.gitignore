@@ -1,2 +1,8 @@
 /f_api_env/
-/project/
+/time-management-app/project/
+/time-management-app/app/
+/time-management-app/static/
+
+*.__pycache__
+*.env
+.idea
