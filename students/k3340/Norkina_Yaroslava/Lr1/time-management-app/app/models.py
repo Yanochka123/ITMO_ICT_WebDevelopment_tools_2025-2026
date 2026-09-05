@@ -1,6 +1,6 @@
+# app/models.py
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Float, Text, Enum, Table, Time, Index
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 from datetime import datetime
 from app.database import Base
 import enum
@@ -35,8 +35,8 @@ class RecurrenceType(str, enum.Enum):
 task_tags = Table(
     'task_tags',
     Base.metadata,
-    Column('task_id', Integer, ForeignKey('tasks.id')),
-    Column('tag_id', Integer, ForeignKey('tags.id'))
+    Column('task_id', Integer, ForeignKey('tasks.id', ondelete='CASCADE')),
+    Column('tag_id', Integer, ForeignKey('tags.id', ondelete='CASCADE'))
 )
 
 class User(Base):
@@ -72,12 +72,12 @@ class Category(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), nullable=False)
-    color = Column(String(7), default="#667eea")  # HEX цвет
+    color = Column(String(7), default="#667eea")
     icon = Column(String(50))
     description = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
     
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
     owner = relationship("User", back_populates="categories")
     tasks = relationship("Task", back_populates="category")
 
@@ -89,7 +89,7 @@ class Tag(Base):
     color = Column(String(7), default="#6c757d")
     created_at = Column(DateTime, default=datetime.utcnow)
     
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
     owner = relationship("User", back_populates="tags")
     tasks = relationship("Task", secondary=task_tags, back_populates="tags")
 
@@ -101,9 +101,8 @@ class Task(Base):
     description = Column(Text)
     status = Column(Enum(TaskStatus), default=TaskStatus.PENDING)
     priority = Column(Enum(PriorityLevel), default=PriorityLevel.MEDIUM)
-    priority_score = Column(Integer, default=3)  # 1-5 для сортировки
-    
-    # Даты
+    priority_score = Column(Integer, default=3)
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     due_date = Column(DateTime, nullable=True)
@@ -111,27 +110,25 @@ class Task(Base):
     completed_at = Column(DateTime, nullable=True)
     reminder_date = Column(DateTime, nullable=True)
     
-    # Время
-    estimated_time = Column(Float, default=0.0)  # Оценочное время в часах
-    time_spent = Column(Float, default=0.0)  # Фактическое время в часах
-    time_allocated = Column(Float, default=0.0)  # Запланированное время в часах
+    estimated_time = Column(Float, default=0.0)
+    time_spent = Column(Float, default=0.0)
+    time_allocated = Column(Float, default=0.0)
     
-    # Прогресс
-    progress = Column(Float, default=0.0)  # 0-100%
+    progress = Column(Float, default=0.0)
     is_recurring = Column(Boolean, default=False)
     recurrence_rule = Column(Enum(RecurrenceType), default=RecurrenceType.NONE)
-    
-    # Дополнительные поля
+
     is_archived = Column(Boolean, default=False)
     is_favorite = Column(Boolean, default=False)
-    order_index = Column(Integer, default=0)  # Для ручной сортировки
+    order_index = Column(Integer, default=0)
     
-    # Внешние ключи
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
-    parent_task_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)  # Для подзадач
-    
-    # Отношения
+    user_id = Column(Integer, ForeignKey(
+        "users.id", ondelete='CASCADE'), nullable=False)
+    category_id = Column(Integer, ForeignKey(
+        "categories.id", ondelete='SET NULL'), nullable=True)
+    parent_task_id = Column(Integer, ForeignKey(
+        "tasks.id", ondelete='CASCADE'), nullable=True)
+
     owner = relationship("User", back_populates="tasks")
     category = relationship("Category", back_populates="tasks")
     tags = relationship("Tag", secondary=task_tags, back_populates="tasks")
@@ -139,41 +136,23 @@ class Task(Base):
     time_entries = relationship("TimeEntry", back_populates="task", cascade="all, delete-orphan")
     recurring_task = relationship("RecurringTask", back_populates="task", uselist=False, cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="task", cascade="all, delete-orphan")
-    
-    # Индексы для оптимизации запросов
+
     __table_args__ = (
         Index('ix_tasks_user_status', 'user_id', 'status'),
         Index('ix_tasks_user_due_date', 'user_id', 'due_date'),
         Index('ix_tasks_user_priority', 'user_id', 'priority_score'),
     )
 
-class RecurringTask(Base):
-    __tablename__ = "recurring_tasks"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    task_id = Column(Integer, ForeignKey("tasks.id"), unique=True)
-    recurrence_type = Column(Enum(RecurrenceType), nullable=False)
-    interval = Column(Integer, default=1)  # Каждые N дней/недель/месяцев
-    end_date = Column(DateTime, nullable=True)
-    max_occurrences = Column(Integer, nullable=True)
-    current_occurrence = Column(Integer, default=0)
-    last_generated = Column(DateTime, nullable=True)
-    next_generation = Column(DateTime, nullable=True)
-    
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="recurring_tasks")
-    task = relationship("Task", back_populates="recurring_task")
-
 class TimeEntry(Base):
     __tablename__ = "time_entries"
     
     id = Column(Integer, primary_key=True, index=True)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
+    task_id = Column(Integer, ForeignKey("tasks.id", ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
     
     start_time = Column(DateTime, nullable=False)
     end_time = Column(DateTime, nullable=True)
-    duration = Column(Float, default=0.0)  # В часах
+    duration = Column(Float, default=0.0)
     description = Column(Text)
     is_running = Column(Boolean, default=False)
     
@@ -182,30 +161,45 @@ class TimeEntry(Base):
     task = relationship("Task", back_populates="time_entries")
     user = relationship("User", back_populates="time_entries")
 
+
+class RecurringTask(Base):
+    __tablename__ = "recurring_tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(Integer, ForeignKey(
+        "tasks.id", ondelete='CASCADE'), unique=True)
+    recurrence_type = Column(Enum(RecurrenceType), nullable=False)
+    interval = Column(Integer, default=1)
+    end_date = Column(DateTime, nullable=True)
+    max_occurrences = Column(Integer, nullable=True)
+    current_occurrence = Column(Integer, default=0)
+    last_generated = Column(DateTime, nullable=True)
+    next_generation = Column(DateTime, nullable=True)
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
+    user = relationship("User", back_populates="recurring_tasks")
+    task = relationship("Task", back_populates="recurring_task")
+
 class DailySchedule(Base):
     __tablename__ = "daily_schedules"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
     
     date = Column(DateTime, nullable=False, index=True)
-    day_of_week = Column(Integer)  # 0-6 (Monday-Sunday)
-    
-    # Рабочие часы
+    day_of_week = Column(Integer)
+
     work_start = Column(Time, default="09:00:00")
     work_end = Column(Time, default="18:00:00")
     lunch_start = Column(Time, nullable=True)
     lunch_end = Column(Time, nullable=True)
-    break_duration = Column(Integer, default=15)  # Минуты
-    
-    # Настройки дня
+    break_duration = Column(Integer, default=15)
+
     is_working_day = Column(Boolean, default=True)
     is_holiday = Column(Boolean, default=False)
     is_vacation = Column(Boolean, default=False)
     notes = Column(Text)
-    
-    # Планируемые задачи на день (связь через отдельную таблицу или JSON)
-    scheduled_tasks = Column(Text)  # JSON список ID задач
+    scheduled_tasks = Column(Text)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -216,12 +210,13 @@ class Notification(Base):
     __tablename__ = "notifications"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
+    task_id = Column(Integer, ForeignKey(
+        "tasks.id", ondelete='CASCADE'), nullable=True)
     
     title = Column(String(200), nullable=False)
     message = Column(Text)
-    type = Column(String(50))  # reminder, deadline, daily_report, etc.
+    type = Column(String(50))
     priority = Column(String(20), default="normal")
     
     scheduled_time = Column(DateTime, nullable=False)
@@ -239,23 +234,20 @@ class UserPreference(Base):
     __tablename__ = "user_preferences"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
-    
-    # Тема и внешний вид
+    user_id = Column(Integer, ForeignKey(
+        "users.id", ondelete='CASCADE'), unique=True)
+
     theme = Column(String(20), default="light")
     accent_color = Column(String(7), default="#667eea")
     
-    # Уведомления
-    reminder_time = Column(Integer, default=30)  # За сколько минут напоминать
+    reminder_time = Column(Integer, default=30)
     daily_report_time = Column(Time, default="18:00:00")
-    weekly_report_day = Column(Integer, default=6)  # Sunday
-    
-    # Рабочие настройки
+    weekly_report_day = Column(Integer, default=6)
+
     default_work_hours = Column(Float, default=8.0)
     default_break_hours = Column(Float, default=1.0)
-    work_days = Column(String(20), default="1,2,3,4,5")  # Дни недели через запятую
-    
-    # Аналитика
+    work_days = Column(String(20), default="1,2,3,4,5")
+
     show_productivity_stats = Column(Boolean, default=True)
     show_time_breakdown = Column(Boolean, default=True)
     
@@ -268,7 +260,7 @@ class Session(Base):
     __tablename__ = "sessions"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
     
     token = Column(String(255), unique=True, index=True)
     device_info = Column(Text)
@@ -286,24 +278,21 @@ class Analytics(Base):
     __tablename__ = "analytics"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'))
     
     date = Column(DateTime, nullable=False, index=True)
-    
-    # Daily stats
+
     tasks_completed = Column(Integer, default=0)
     tasks_created = Column(Integer, default=0)
     total_time_spent = Column(Float, default=0.0)
     estimated_time = Column(Float, default=0.0)
-    productivity_score = Column(Float, default=0.0)  # 0-100
+    productivity_score = Column(Float, default=0.0)
     
-    # Time distribution by category (JSON)
-    category_time = Column(Text)  # JSON: {"category_name": hours}
-    priority_distribution = Column(Text)  # JSON: {"priority": count}
+    category_time = Column(Text)
+    priority_distribution = Column(Text)
     
-    # Efficiency metrics
-    estimated_vs_actual = Column(Float, default=0.0)  # % difference
-    on_time_completion_rate = Column(Float, default=0.0)  # %
+    estimated_vs_actual = Column(Float, default=0.0)
+    on_time_completion_rate = Column(Float, default=0.0)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
