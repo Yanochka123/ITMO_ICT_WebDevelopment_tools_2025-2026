@@ -1,1 +1,21 @@
-/f_api_env/
+# Игнорируем конкретные папки внутри time-management-app
+time-management-app/project/
+time-management-app/app/
+time-management-app/static/
+
+# Игнорируем виртуальное окружение где угодно
+f_api_env/
+venv/
+env/
+
+# Игнорируем кэш Python где угодно
+.__pycache__/
+*.pyc
+
+# Игнорируем файлы .env где угодно
+*.env
+.env
+
+# Игнорируем папку IDE
+.idea/
+.vscode/

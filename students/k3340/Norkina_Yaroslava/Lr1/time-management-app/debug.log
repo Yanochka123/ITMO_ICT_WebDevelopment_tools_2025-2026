@@ -1,0 +1,84 @@
+
+============================================================
+❌ ОШИБКА [2026-09-09 18:36:21]
+Ошибка в PATCH /tasks/15: (psycopg2.errors.ForeignKeyViolation) ОШИБКА:  INSERT или UPDATE в таблице "tasks" нарушает ограничение внешнего ключа "tasks_parent_task_id_fkey"
+DETAIL:  Ключ (parent_task_id)=(0) отсутствует в таблице "tasks".
+
+[SQL: UPDATE tasks SET title=%(title)s, description=%(description)s, priority=%(priority)s, updated_at=%(updated_at)s, due_date=%(due_date)s, start_date=%(start_date)s, progress=%(progress)s, is_recurring=%(is_recurring)s, is_archived=%(is_archived)s, is_favorite=%(is_favorite)s, category_id=%(category_id)s, parent_task_id=%(parent_task_id)s WHERE tasks.id = %(tasks_id)s]
+[parameters: {'title': 'купить пельмени', 'description': 'в магните', 'priority': 'LOW', 'updated_at': datetime.datetime(2026, 9, 9, 15, 36, 21, 722130), 'due_date': datetime.datetime(2026, 9, 10, 15, 35, 29, 9000, tzinfo=TzInfo(UTC)), 'start_date': datetime.datetime(2026, 9, 9, 15, 35, 29, 9000, tzinfo=TzInfo(UTC)), 'progress': 40.0, 'is_recurring': True, 'is_archived': True, 'is_favorite': True, 'category_id': 2, 'parent_task_id': 0, 'tasks_id': 15}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.ForeignKeyViolation: ОШИБКА:  INSERT или UPDATE в таблице "tasks" нарушает ограничение внешнего ключа "tasks_parent_task_id_fkey"
+DETAIL:  Ключ (parent_task_id)=(0) отсутствует в таблице "tasks".
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\time-management-app\app\routes\tasks.py", line 182, in update_task
+    db_task = crud.update_task(db, task_id, task_update)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\time-management-app\app\crud.py", line 289, in update_task
+    db.commit()
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\session.py", line 1969, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\session.py", line 1256, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\session.py", line 1231, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\session.py", line 4312, in flush
+    self._flush(objects)
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\session.py", line 4447, in _flush
+    with util.safe_reraise():
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\session.py", line 4408, in _flush
+    flush_context.execute()
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\persistence.py", line 85, in save_obj
+    _emit_update_statements(
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\orm\persistence.py", line 909, in _emit_update_statements
+    c = connection.execute(
+        ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\sql\elements.py", line 516, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 2343, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\sqlalchemy\engine\default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.ForeignKeyViolation) ОШИБКА:  INSERT или UPDATE в таблице "tasks" нарушает ограничение внешнего ключа "tasks_parent_task_id_fkey"
+DETAIL:  Ключ (parent_task_id)=(0) отсутствует в таблице "tasks".
+
+[SQL: UPDATE tasks SET title=%(title)s, description=%(description)s, priority=%(priority)s, updated_at=%(updated_at)s, due_date=%(due_date)s, start_date=%(start_date)s, progress=%(progress)s, is_recurring=%(is_recurring)s, is_archived=%(is_archived)s, is_favorite=%(is_favorite)s, category_id=%(category_id)s, parent_task_id=%(parent_task_id)s WHERE tasks.id = %(tasks_id)s]
+[parameters: {'title': 'купить пельмени', 'description': 'в магните', 'priority': 'LOW', 'updated_at': datetime.datetime(2026, 9, 9, 15, 36, 21, 722130), 'due_date': datetime.datetime(2026, 9, 10, 15, 35, 29, 9000, tzinfo=TzInfo(UTC)), 'start_date': datetime.datetime(2026, 9, 9, 15, 35, 29, 9000, tzinfo=TzInfo(UTC)), 'progress': 40.0, 'is_recurring': True, 'is_archived': True, 'is_favorite': True, 'category_id': 2, 'parent_task_id': 0, 'tasks_id': 15}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+============================================================

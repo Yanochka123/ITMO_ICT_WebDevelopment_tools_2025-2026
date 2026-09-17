@@ -1,4 +1,32 @@
 # app/main.py
+
+# app/main.py
+from app.routes import auth, tasks, time_entries, analytics, categories, tags, schedules
+from app.database import init_db
+import os
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request
+import logging
+import sys
+
+# Настройка логирования ДО создания приложения
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.StreamHandler(sys.stderr)
+    ]
+)
+
+# Устанавливаем уровень логирования для SQLAlchemy
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+
+# ... остальной код ...
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates

@@ -1,0 +1,298 @@
+2026-09-09 12:50:05,226 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 12:50:05,226 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 12:50:05,226 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 12:50:05,232 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 12:50:07,436 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 12:50:07,437 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 12:50:07,437 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 12:50:07,455 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 12:50:17,655 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 12:50:17,656 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 12:50:17,656 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 12:50:17,662 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 12:50:18,255 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 12:50:18,255 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 12:50:18,255 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 12:50:18,261 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 12:50:55,223 - app.routes.tasks - INFO - Создание задачи пользователем 1
+2026-09-09 12:50:55,238 - app.routes.tasks - INFO - Данные задачи: title='Мытье пола' description='В комнате и на балконе' status=<TaskStatus.PENDING: 'pending'> priority=<PriorityLevel.MEDIUM: 'medium'> due_date=datetime.datetime(2026, 9, 10, 11, 15, 13, 129000, tzinfo=TzInfo(UTC)) start_date=None estimated_time=1.5 is_recurring=False recurrence_rule=None is_favorite=False category_id=None parent_task_id=None tag_ids=[]
+2026-09-09 12:50:55,238 - app.crud - INFO - create_task вызван с данными: title='Мытье пола' description='В комнате и на балконе' status=<TaskStatus.PENDING: 'pending'> priority=<PriorityLevel.MEDIUM: 'medium'> due_date=datetime.datetime(2026, 9, 10, 11, 15, 13, 129000, tzinfo=TzInfo(UTC)) start_date=None estimated_time=1.5 is_recurring=False recurrence_rule=None is_favorite=False category_id=None parent_task_id=None tag_ids=[]
+2026-09-09 12:50:55,238 - app.crud - INFO - task_data: {'title': 'Мытье пола', 'description': 'В комнате и на балконе', 'status': <TaskStatus.PENDING: 'pending'>, 'priority': <PriorityLevel.MEDIUM: 'medium'>, 'due_date': datetime.datetime(2026, 9, 10, 11, 15, 13, 129000, tzinfo=TzInfo(UTC)), 'start_date': None, 'estimated_time': 1.5, 'is_recurring': False, 'recurrence_rule': None, 'is_favorite': False, 'category_id': None, 'parent_task_id': None}
+2026-09-09 12:50:55,239 - app.crud - INFO - recurrence_rule установлен в None
+2026-09-09 12:50:55,239 - app.crud - INFO - Создание объекта Task...
+2026-09-09 12:50:55,239 - app.crud - INFO - Объект Task создан
+2026-09-09 12:50:55,239 - app.crud - INFO - Сохранение в БД...
+2026-09-09 12:50:55,253 - app.crud - INFO - Задача создана с ID: 8
+2026-09-09 12:50:55,253 - app.routes.tasks - INFO - Задача создана: 8
+2026-09-09 12:52:08,063 - app.routes.tasks - INFO - Создание задачи пользователем 1
+2026-09-09 12:52:08,063 - app.routes.tasks - INFO - Данные задачи: title='Мытье пола' description='В комнате и на балконе' status=<TaskStatus.PENDING: 'pending'> priority=<PriorityLevel.MEDIUM: 'medium'> due_date=datetime.datetime(2026, 9, 10, 11, 15, 13, 129000, tzinfo=TzInfo(UTC)) start_date=None estimated_time=1.5 is_recurring=False recurrence_rule=None is_favorite=False category_id=None parent_task_id=None tag_ids=[]
+2026-09-09 12:52:08,064 - app.crud - INFO - create_task вызван с данными: title='Мытье пола' description='В комнате и на балконе' status=<TaskStatus.PENDING: 'pending'> priority=<PriorityLevel.MEDIUM: 'medium'> due_date=datetime.datetime(2026, 9, 10, 11, 15, 13, 129000, tzinfo=TzInfo(UTC)) start_date=None estimated_time=1.5 is_recurring=False recurrence_rule=None is_favorite=False category_id=None parent_task_id=None tag_ids=[]
+2026-09-09 12:52:08,064 - app.crud - INFO - task_data: {'title': 'Мытье пола', 'description': 'В комнате и на балконе', 'status': <TaskStatus.PENDING: 'pending'>, 'priority': <PriorityLevel.MEDIUM: 'medium'>, 'due_date': datetime.datetime(2026, 9, 10, 11, 15, 13, 129000, tzinfo=TzInfo(UTC)), 'start_date': None, 'estimated_time': 1.5, 'is_recurring': False, 'recurrence_rule': None, 'is_favorite': False, 'category_id': None, 'parent_task_id': None}
+2026-09-09 12:52:08,064 - app.crud - INFO - recurrence_rule установлен в None
+2026-09-09 12:52:08,065 - app.crud - INFO - Создание объекта Task...
+2026-09-09 12:52:08,065 - app.crud - INFO - Объект Task создан
+2026-09-09 12:52:08,066 - app.crud - INFO - Сохранение в БД...
+2026-09-09 12:52:08,084 - app.crud - INFO - Задача создана с ID: 9
+2026-09-09 12:52:08,084 - app.routes.tasks - INFO - Задача создана: 9
+2026-09-09 13:03:18,533 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:03:18,534 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:03:18,534 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:03:18,541 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:04:16,851 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:04:16,852 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:04:16,852 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:04:16,856 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:05:16,933 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:05:16,933 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:05:16,933 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:05:16,938 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:05:18,371 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:05:18,371 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:05:18,372 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:05:18,375 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:05:23,368 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:05:23,368 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:05:23,369 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:05:23,374 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:05:25,144 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:05:25,145 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:05:25,145 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:05:25,150 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:05:38,834 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 13:05:38,834 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 13:05:38,834 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 13:05:38,839 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 13:06:27,816 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 13:06:27,817 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 13:06:27,817 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 13:06:27,817 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 13:06:27,817 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 13:06:27,818 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 13:06:27,818 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 13:06:27,818 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 13:06:27,818 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 13:06:27,818 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 13:06:27,818 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 13:06:27,819 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 13:06:27,819 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 13:06:27,992 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-09 13:06:28,014 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2026-09-09 13:06:28,014 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2026-09-09 13:40:39,052 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 13:40:39,052 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 13:40:39,052 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 13:40:39,052 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 13:40:39,053 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 16:00:31,990 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 16:00:31,990 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 16:00:31,990 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 16:00:31,997 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 16:00:39,201 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 16:00:39,202 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 16:00:39,202 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 16:00:39,205 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 16:01:20,209 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:01:20,209 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 16:01:20,209 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 16:01:20,209 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:01:20,209 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:01:20,210 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 16:01:20,242 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-09 16:01:20,244 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2026-09-09 16:01:20,244 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2026-09-09 16:22:58,268 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 16:22:58,268 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 16:22:58,268 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 16:22:58,270 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 16:22:58,270 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 16:22:58,270 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 16:22:58,273 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 16:22:58,275 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 16:23:40,238 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 16:23:40,239 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 16:23:40,239 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 16:23:40,243 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 16:24:22,123 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:24:22,123 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 16:24:22,124 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 16:24:22,125 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:24:22,125 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 16:24:22,188 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-09 16:24:22,202 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2026-09-09 16:24:22,202 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2026-09-09 16:24:34,557 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=None
+2026-09-09 16:24:34,583 - app.crud - INFO - Найдено задач: 7
+2026-09-09 16:24:40,732 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.PENDING
+2026-09-09 16:24:40,732 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.PENDING
+2026-09-09 16:24:40,748 - app.crud - INFO - Найдено задач: 7
+2026-09-09 16:24:48,243 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.IN_PROGRESS
+2026-09-09 16:24:48,244 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.IN_PROGRESS
+2026-09-09 16:24:48,245 - app.crud - INFO - Найдено задач: 0
+2026-09-09 16:25:01,572 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.COMPLETED
+2026-09-09 16:25:01,572 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.COMPLETED
+2026-09-09 16:25:01,575 - app.crud - INFO - Найдено задач: 0
+2026-09-09 16:25:10,466 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.CANCELLED
+2026-09-09 16:25:10,467 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.CANCELLED
+2026-09-09 16:25:10,468 - app.crud - INFO - Найдено задач: 0
+2026-09-09 16:25:18,297 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.OVERDUE
+2026-09-09 16:25:18,299 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.OVERDUE
+2026-09-09 16:25:18,300 - app.crud - INFO - Найдено задач: 0
+2026-09-09 16:25:27,388 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=None
+2026-09-09 16:25:27,389 - app.crud - INFO - Найдено задач: 7
+2026-09-09 16:25:36,986 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.PENDING
+2026-09-09 16:25:36,987 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.PENDING
+2026-09-09 16:25:36,989 - app.crud - INFO - Найдено задач: 7
+2026-09-09 16:25:46,338 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.IN_PROGRESS
+2026-09-09 16:25:46,339 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.IN_PROGRESS
+2026-09-09 16:25:46,340 - app.crud - INFO - Найдено задач: 0
+2026-09-09 16:31:25,964 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.IN_PROGRESS
+2026-09-09 16:31:25,964 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.IN_PROGRESS
+2026-09-09 16:31:25,966 - app.crud - INFO - Найдено задач: 1
+2026-09-09 16:31:34,656 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=None
+2026-09-09 16:31:34,658 - app.crud - INFO - Найдено задач: 8
+2026-09-09 16:31:45,256 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.IN_PROGRESS
+2026-09-09 16:31:45,257 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.IN_PROGRESS
+2026-09-09 16:31:45,260 - app.crud - INFO - Найдено задач: 1
+2026-09-09 16:31:58,797 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=TaskStatus.PENDING
+2026-09-09 16:31:58,798 - app.crud - INFO - Добавлена фильтрация по статусу: TaskStatus.PENDING
+2026-09-09 16:31:58,799 - app.crud - INFO - Найдено задач: 7
+2026-09-09 16:58:29,283 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:58:29,283 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 16:58:29,283 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 16:58:29,283 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 16:58:29,284 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 17:08:12,890 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 17:08:12,891 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 17:08:12,891 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 17:08:12,896 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 17:08:13,034 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 17:08:13,034 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 17:08:13,034 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 17:08:13,041 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 17:09:38,056 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:09:38,057 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:09:38,058 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 17:09:38,058 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 17:09:38,058 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:09:38,058 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 17:09:38,088 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-09 17:09:38,090 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2026-09-09 17:09:38,090 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2026-09-09 17:10:14,370 - app.crud - INFO - get_tasks: user_id=1, skip=0, limit=100, status=None
+2026-09-09 17:10:14,385 - app.crud - INFO - Найдено задач: 7
+2026-09-09 17:16:24,548 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 17:16:24,548 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 17:16:24,549 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 17:16:24,552 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 17:16:24,650 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 17:16:24,650 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 17:16:24,650 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 17:16:24,655 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 17:17:23,731 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:17:23,731 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 17:17:23,731 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 17:17:23,731 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:17:23,731 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:17:23,732 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 17:17:23,732 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 17:17:23,732 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:17:23,732 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:17:23,732 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 17:17:23,732 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 17:17:23,733 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:17:23,733 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 17:17:23,766 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-09 17:17:23,767 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2026-09-09 17:17:23,767 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2026-09-09 17:24:00,420 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 17:24:00,421 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 17:24:00,421 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 17:24:00,428 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 17:24:00,478 - passlib.utils.compat - DEBUG - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2026-09-09 17:24:00,478 - passlib.utils.compat - DEBUG - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2026-09-09 17:24:00,479 - passlib.utils.compat - DEBUG - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2026-09-09 17:24:00,483 - passlib.registry - DEBUG - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2026-09-09 17:24:31,306 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_name with data[0:10]
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_data with data[11:19]
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_name with data[20:28]
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_data with data[29:47]
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:24:31,307 - multipart.multipart - DEBUG - Calling on_field_start with no data
+2026-09-09 17:24:31,308 - multipart.multipart - DEBUG - Calling on_field_name with data[48:56]
+2026-09-09 17:24:31,308 - multipart.multipart - DEBUG - Calling on_field_data with data[57:65]
+2026-09-09 17:24:31,308 - multipart.multipart - DEBUG - Calling on_field_end with no data
+2026-09-09 17:24:31,308 - multipart.multipart - DEBUG - Calling on_end with no data
+2026-09-09 17:24:31,349 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\User1\Documents\Labworks(2025-2026)\Web\FastApi\ITMO_ICT_WebDevelopment_tools_2025-2026\students\k3340\Norkina_Yaroslava\Lr1\f_api_env\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-09 17:24:31,351 - passlib.handlers.bcrypt - DEBUG - detected 'bcrypt' backend, version '<unknown>'
+2026-09-09 17:24:31,351 - passlib.handlers.bcrypt - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround

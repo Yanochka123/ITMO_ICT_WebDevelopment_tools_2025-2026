@@ -1,4 +1,7 @@
 # alembic/env.py
+from app.models import *
+from app.database import Base
+from dotenv import load_dotenv
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -6,8 +9,6 @@ from alembic import context
 import sys
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-from urllib.parse import quote_plus
 
 # Добавляем путь к приложению
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
@@ -16,14 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 env_path = Path(__file__).parent.parent / 'app' / '.env'
 load_dotenv(dotenv_path=env_path)
 
-# Импортируем Base из database
-from app.database import Base
-# Импортируем все модели, чтобы Alembic их видел
-from app.models import (
-    User, Category, Tag, Task, RecurringTask, 
-    TimeEntry, DailySchedule, Notification, 
-    UserPreference, Session, Analytics
-)
+# Импортируем Base и модели
 
 config = context.config
 
@@ -40,13 +34,13 @@ def get_database_url():
     DB_USER = os.getenv("DB_USER", "postgres")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "")
     
-    # Кодируем пароль
+    from urllib.parse import quote_plus
     encoded_password = quote_plus(DB_PASSWORD)
     
     return f"postgresql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
+
 def run_migrations_offline() -> None:
-    """Запуск миграций в 'offline' режиме."""
     url = get_database_url()
     context.configure(
         url=url,
@@ -58,11 +52,10 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def run_migrations_online() -> None:
-    """Запуск миграций в 'online' режиме."""
     url = get_database_url()
-    
-    # Создаем конфигурацию с правильным URL
+
     configuration = config.get_section(config.config_ini_section, {})
     configuration["sqlalchemy.url"] = url
     

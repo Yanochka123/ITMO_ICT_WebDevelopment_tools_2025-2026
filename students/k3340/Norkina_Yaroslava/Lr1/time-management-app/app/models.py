@@ -1,28 +1,27 @@
-# app/models.py
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Float, Text, Enum, Table, Time, Index
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
 import enum
 
-# Enum для статусов задач
 class TaskStatus(str, enum.Enum):
+    """Статусы задач"""
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
     OVERDUE = "overdue"
 
-# Enum для приоритетов
 class PriorityLevel(str, enum.Enum):
+    """Приоритеты задач"""
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     URGENT = "urgent"
     CRITICAL = "critical"
 
-# Enum для повторяющихся задач
 class RecurrenceType(str, enum.Enum):
+    """Типы повторения задач"""
     NONE = "none"
     DAILY = "daily"
     WEEKLY = "weekly"
@@ -31,7 +30,8 @@ class RecurrenceType(str, enum.Enum):
     QUARTERLY = "quarterly"
     YEARLY = "yearly"
 
-# Ассоциативная таблица для связи задач с тегами
+# ===== Ассоциативные таблицы =====
+
 task_tags = Table(
     'task_tags',
     Base.metadata,
@@ -116,7 +116,7 @@ class Task(Base):
     
     progress = Column(Float, default=0.0)
     is_recurring = Column(Boolean, default=False)
-    recurrence_rule = Column(Enum(RecurrenceType), default=RecurrenceType.NONE)
+    recurrence_rule = Column(Enum(RecurrenceType), nullable=True, default=None)
 
     is_archived = Column(Boolean, default=False)
     is_favorite = Column(Boolean, default=False)
@@ -129,10 +129,25 @@ class Task(Base):
     parent_task_id = Column(Integer, ForeignKey(
         "tasks.id", ondelete='CASCADE'), nullable=True)
 
+    # Отношения
     owner = relationship("User", back_populates="tasks")
     category = relationship("Category", back_populates="tasks")
     tags = relationship("Tag", secondary=task_tags, back_populates="tasks")
-    subtasks = relationship("Task", backref="parent_task", remote_side=[id])
+    # Дочерняя сторона: одна задача → много подзадач (one-to-many)
+    subtasks = relationship(
+        "Task",
+        foreign_keys=[parent_task_id],
+        back_populates="parent_task",
+        cascade="all, delete-orphan"
+    )
+
+    # Родительская сторона: много задач → один родитель (many-to-one)
+    parent_task = relationship(
+        "Task",
+        foreign_keys=[parent_task_id],
+        remote_side=[id],          # ← ключевой момент
+        back_populates="subtasks"
+    )
     time_entries = relationship("TimeEntry", back_populates="task", cascade="all, delete-orphan")
     recurring_task = relationship("RecurringTask", back_populates="task", uselist=False, cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="task", cascade="all, delete-orphan")

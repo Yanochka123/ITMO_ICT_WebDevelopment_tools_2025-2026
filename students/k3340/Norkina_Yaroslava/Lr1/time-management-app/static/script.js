@@ -1,38 +1,154 @@
 // static/script.js
+
+// ===== Утилиты для работы с токеном =====
+function getToken() {
+    return localStorage.getItem('access_token');
+}
+
+function setToken(token) {
+    localStorage.setItem('access_token', token);
+}
+
+function clearToken() {
+    localStorage.removeItem('access_token');
+}
+
+// ===== Обёртка над fetch с автоматическим добавлением токена =====
+async function authFetch(url, options = {}) {
+    const token = getToken();
+    const headers = { ...(options.headers || {}) };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(url, { ...options, headers });
+
+    if (response.status === 401) {
+        clearToken();
+        showLogin();
+        throw new Error('Unauthorized');
+    }
+    return response;
+}
+
+// ===== Показ/скрытие формы логина =====
+function showLogin() {
+    document.getElementById('loginSection').style.display = 'block';
+    document.getElementById('appContent').style.display = 'none';
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.style.display = 'none';
+}
+
+function showApp() {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+}
+
+// ===== Логин =====
+async function login(email, password) {
+    const body = new URLSearchParams();
+    body.append('username', email);
+    body.append('password', password);
+
+    const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+    });
+
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.detail || 'Ошибка входа');
+    }
+
+    const data = await response.json();
+    setToken(data.access_token || data.token);
+}
+
+// ===== Инициализация =====
 document.addEventListener('DOMContentLoaded', function () {
-    // Загрузка статистики
-    loadStats();
+    console.log('=== script.js загружен ===');
 
-    // Загрузка списка задач
-    loadTasks();
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    // Обновление данных каждые 30 секунд
-    setInterval(() => {
+    if (!loginForm) {
+        console.error('❌ loginForm не найден в DOM');
+        return;
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('=== submit перехвачен ===');
+        loginError.style.display = 'none';
+
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            await login(email, password);
+            console.log('=== логин успешен ===');
+            showApp();
+            loadStats();
+            loadTasks();
+            setInterval(() => {
+                loadStats();
+                loadTasks();
+            }, 30000);
+        } catch (err) {
+            console.error('Ошибка логина:', err);
+            loginError.textContent = err.message;
+            loginError.style.display = 'block';
+        }
+    });
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            clearToken();
+            showLogin();
+        });
+    }
+
+    // Если токен уже есть — сразу показываем приложение
+    if (getToken()) {
+        showApp();
         loadStats();
         loadTasks();
-    }, 30000);
+        setInterval(() => {
+            loadStats();
+            loadTasks();
+        }, 30000);
+    } else {
+        showLogin();
+    }
 });
 
+// ===== Загрузка статистики =====
 async function loadStats() {
     try {
-        const response = await fetch('/tasks/stats');
+        const response = await authFetch('/tasks/stats');
         if (!response.ok) throw new Error('Failed to load stats');
-        
-        const stats = await response.json();
 
+        const stats = await response.json();
         document.getElementById('totalTasks').textContent = stats.total_tasks || 0;
         document.getElementById('completedTasks').textContent = stats.completed_tasks || 0;
         document.getElementById('inProgressTasks').textContent = stats.in_progress_tasks || 0;
         document.getElementById('pendingTasks').textContent = stats.pending_tasks || 0;
     } catch (error) {
         console.error('Error loading stats:', error);
-        document.querySelector('.stats-grid').innerHTML = '<p class="error">Ошибка загрузки статистики</p>';
+        if (error.message !== 'Unauthorized') {
+            document.querySelector('.stats-grid').innerHTML =
+                '<p class="error">Ошибка загрузки статистики</p>';
+        }
     }
 }
 
+// ===== Загрузка задач =====
 async function loadTasks() {
     try {
-        const response = await fetch('/tasks/?limit=10');
+        const response = await authFetch('/tasks/?limit=10');
         if (!response.ok) throw new Error('Failed to load tasks');
 
         const tasks = await response.json();
@@ -42,7 +158,7 @@ async function loadTasks() {
             tasksList.innerHTML = '<p class="loading">Нет задач</p>';
             return;
         }
-        
+
         tasksList.innerHTML = tasks.map(task => `
             <div class="task-item">
                 <div class="task-title">${escapeHtml(task.title)}</div>
@@ -56,10 +172,14 @@ async function loadTasks() {
         `).join('');
     } catch (error) {
         console.error('Error loading tasks:', error);
-        document.getElementById('tasksList').innerHTML = '<p class="error">Ошибка загрузки задач</p>';
+        if (error.message !== 'Unauthorized') {
+            document.getElementById('tasksList').innerHTML =
+                '<p class="error">Ошибка загрузки задач</p>';
+        }
     }
 }
 
+// ===== Вспомогательные функции =====
 function getStatusLabel(status) {
     const labels = {
         'pending': 'Ожидает',
