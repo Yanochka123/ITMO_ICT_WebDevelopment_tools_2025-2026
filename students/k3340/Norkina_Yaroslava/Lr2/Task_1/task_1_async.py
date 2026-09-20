@@ -5,13 +5,13 @@ import asyncio
 async def calculate_sum_async(start: int, end: int) -> int:
     # вычисление сложением - большая нагрузка
     total = 0
-    '''
+
     for i in range(start, end + 1):
         total += i
     '''
     # вычисление по формуле Гаусса позволяет получить результат за небольшое время
     total = (start + end)*(end - start + 1)//2
-
+    '''
     return total
 
 async def run_asyncio_logic(target_number: int, num_tasks: int):

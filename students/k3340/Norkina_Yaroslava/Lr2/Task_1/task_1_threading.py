@@ -5,12 +5,13 @@ import threading
 def calculate_sum(start: int, end: int, results_list: list, index: int):
     # функция ничего не возвращает, так как имеет доступ к общим ресурсам процесса и может менять значение напрямую
     total = 0
-    '''
+
     for i in range(start, end + 1):
         total += i
     '''
     # вычисление по формуле Гаусса позволяет получить результат за небольшое время
     total = (start + end)*(end - start + 1)//2
+    '''
     results_list[index] = total
 
 def run_threading(target_number: int, num_tasks: int):

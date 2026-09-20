@@ -6,13 +6,13 @@ def calculate_sum(args: tuple) -> int:
     # tuple на вход так как pool.map передает единственный аргумент
     start, end = args
     total = 0
-    '''
+
     for i in range(start, end + 1):
         total += i
     '''
     # вычисление по формуле Гаусса позволяет получить результат за небольшое время
     total = (start + end)*(end - start + 1)//2
-    
+    '''
     return total
 
 def run_multiprocessing(target_number: int, num_tasks: int):
