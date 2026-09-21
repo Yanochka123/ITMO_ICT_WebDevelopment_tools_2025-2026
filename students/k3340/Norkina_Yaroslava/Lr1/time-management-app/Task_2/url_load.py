@@ -1,9 +1,3 @@
-"""
-Утилита для предварительного сбора 100 уникальных URL-адресов
-с сайтов, содержащих задачи, чек-листы и планы.
-Результат сохраняется в urls.txt.
-"""
-
 import re
 from pathlib import Path
 
@@ -12,10 +6,6 @@ from bs4 import BeautifulSoup
 
 
 def normalize_title(title: str) -> str:
-    """
-    Нормализует название для обеспечения строгой уникальности.
-    Удаляет артикли, скобки, спецсимволы и приводит к нижнему регистру.
-    """
     t = title.lower()
     t = re.sub(r'\(.*?\)', '', t)
     t = re.sub(r'\[.*?\]', '', t)
@@ -24,7 +14,6 @@ def normalize_title(title: str) -> str:
 
 
 def fetch_real_urls():
-    """Собирает 100 уникальных ссылок на страницы с задачами/чек-листами."""
     print("Сбор 100 уникальных ссылок (50 Wikipedia + 50 GitHub Awesome)...")
     urls_file = Path(__file__).parent / "urls.txt"
     all_urls = []
@@ -38,9 +27,7 @@ def fetch_real_urls():
         )
     }
 
-    # ============================================================
-    # 1. Wikipedia — списки дел, привычек, техник продуктивности (50 URL)
-    # ============================================================
+    # 1. Wikipedia — списки дел, привычек, техник продуктивности (50)
     try:
         print("[1/2] Парсинг Wikipedia (productivity-related lists)...")
         wiki_categories = [
@@ -88,9 +75,7 @@ def fetch_real_urls():
     except Exception as e:
         print(f"Ошибка Wikipedia: {e}")
 
-    # ============================================================
-    # 2. GitHub Awesome Lists — списки задач и инструментов (50 URL)
-    # ============================================================
+    # 2. GitHub Awesome Lists — списки задач и инструментов (50)
     try:
         print("[2/2] Парсинг GitHub Awesome Lists...")
         github_pages = [
@@ -135,9 +120,7 @@ def fetch_real_urls():
     except Exception as e:
         print(f"Ошибка GitHub: {e}")
 
-    # ============================================================
     # Сохраняем результат
-    # ============================================================
     with open(urls_file, "w", encoding="utf-8") as f:
         for title, link in all_urls:
             f.write(f"# Страница: {title}\n")

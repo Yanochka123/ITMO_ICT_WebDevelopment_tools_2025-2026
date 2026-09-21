@@ -1,6 +1,14 @@
-from task2_threading import run_threading
-from task2_multiprocessing import run_multiprocessing
-from task2_async import run_asyncio
+import sys
+from pathlib import Path
+
+CURRENT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = CURRENT_DIR.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from threading_2 import run_threading
+from multiprocessing_2 import run_multiprocessing
+from async_2 import run_asyncio
 from db import clean_db_sync
 
 

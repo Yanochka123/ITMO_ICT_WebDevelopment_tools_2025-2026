@@ -1,9 +1,3 @@
-"""
-Универсальный адаптер-парсер для страниц с задачами/чек-листами.
-Функция extract_page_info(html, url) возвращает словарь,
-совместимый со схемой БД тайм-менеджера (tags, tasks, categories).
-"""
-
 import uuid
 import math
 import re
@@ -12,8 +6,9 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 
+# Загружает URL-ы из текстового файла, игнорируя пустые строки и комментарии
+
 def load_urls(filename: str = "urls.txt") -> list[str]:
-    """Загружает URL-ы из текстового файла, игнорируя пустые строки и комментарии."""
     file_path = Path(__file__).parent / filename
     urls = []
     try:
@@ -26,31 +21,28 @@ def load_urls(filename: str = "urls.txt") -> list[str]:
         print(f"[Ошибка] Файл {filename} не найден!")
     return urls
 
+# Разделяет список на равные части
 
 def divide_into_chunks(lst: list, num_chunks: int) -> list[list]:
-    """Разделяет список на равные части."""
     if not lst:
         return []
     chunk_size = math.ceil(len(lst) / num_chunks)
     return [lst[i:i + chunk_size] for i in range(0, len(lst), chunk_size)]
 
 
-# ============================================================
-# 2. ПАРСЕР: УНИВЕРСАЛЬНЫЙ АДАПТЕР
-# ============================================================
+# Возвращает словарь, совместимый со схемой БД тайм-менеджера (tags, tasks, categories)
 
 def extract_page_info(html: str, url: str) -> dict:
     """
-    Извлекает информацию о странице с задачами/чек-листом.
-    Возвращает словарь, совместимый со схемой БД тайм-менеджера.
+    Получает на вход страницу с задачами
     
     Структура результата:
         {
             "external_id": str,       # уникальный ID импорта (uuid)
-            "title": str,             # <title> страницы → tags.name
-            "description": str,       # meta description → tasks.description
+            "title": str,             # <title> страницы - tags.name
+            "description": str,       # meta description - tasks.description
             "language": str,          # язык страницы
-            "keywords": list[str],    # ключевые слова → tags
+            "keywords": list[str],    # ключевые слова - tags
             "estimated_hours": float, # предполагаемая оценка времени
             "priority": str,          # low/medium/high/urgent/critical
             "category_hint": str,     # предполагаемая категория
@@ -59,7 +51,6 @@ def extract_page_info(html: str, url: str) -> dict:
     """
     soup = BeautifulSoup(html, "html.parser")
 
-    # ---- Значения по умолчанию ----
     title = "Без названия"
     description = "Описание недоступно."
     language = "en"
@@ -68,9 +59,6 @@ def extract_page_info(html: str, url: str) -> dict:
     priority = "medium"
     category_hint = "Прочее"
 
-    # ============================================================
-    # ПАРСЕР WIKIPEDIA (списки дел, техники продуктивности)
-    # ============================================================
     if "wikipedia.org" in url:
         h1 = soup.find("h1", id="firstHeading")
         if h1:
@@ -101,9 +89,7 @@ def extract_page_info(html: str, url: str) -> dict:
         # Предполагаемая категория
         category_hint = _guess_category(title, keywords)
 
-    # ============================================================
-    # ПАРСЕР GITHUB AWESOME LISTS (списки задач/инструментов)
-    # ============================================================
+
     elif "github.com" in url:
         # Название репозитория
         title_tag = soup.find("title")
@@ -129,9 +115,8 @@ def extract_page_info(html: str, url: str) -> dict:
         priority = _guess_priority(title)
         category_hint = _guess_category(title, keywords)
 
-    # ============================================================
-    # ОБЩИЙ ПАРСЕР (для остальных сайтов)
-    # ============================================================
+
+    # для остальных сайтов
     else:
         # 1. <title>
         title_tag = soup.find("title")
@@ -155,15 +140,12 @@ def extract_page_info(html: str, url: str) -> dict:
         if html_tag and html_tag.get("lang"):
             language = html_tag["lang"]
 
-        # 5. Приоритет и категория — эвристики
+        # 5. Приоритет и категория
         priority = _guess_priority(title + " " + description)
         category_hint = _guess_category(title, keywords)
 
-    # ============================================================
-    # ОБЩАЯ НОРМАЛИЗАЦИЯ ДАННЫХ
-    # ============================================================
 
-    # --- Язык ---
+    # Язык
     LANG_MAP = {
         "en": "English",
         "ru": "Russian",
@@ -184,7 +166,7 @@ def extract_page_info(html: str, url: str) -> dict:
     else:
         language = "English"
 
-    # --- Ключевые слова (в tags.name, лимит 100 символов) ---
+    # Ключевые слова в tags.name
     if not keywords:
         keywords = ["imported", "web"]
     else:
@@ -199,13 +181,13 @@ def extract_page_info(html: str, url: str) -> dict:
         if not keywords:
             keywords = ["imported", "web"]
 
-    # --- Описание ---
+    # Описание
     if description:
         description = re.sub(r"\s+", " ", description).strip()
         if len(description) > 1000:
             description = description[:997] + "..."
 
-    # --- Оценка времени (эвристика по длине описания) ---
+    # Оценка времени по длине описания
     # Чем длиннее описание — тем больше времени может потребоваться
     word_count = len(description.split())
     if word_count < 20:
@@ -217,10 +199,10 @@ def extract_page_info(html: str, url: str) -> dict:
     else:
         estimated_hours = 4.0
 
-    # --- Приоритет (эвристика) ---
+    # Приоритет
     priority = _normalize_priority(priority)
 
-    # --- Категория ---
+    # Категория
     category_hint = category_hint[:50]
 
     return {
@@ -235,13 +217,9 @@ def extract_page_info(html: str, url: str) -> dict:
         "url": url,
     }
 
-
-# ============================================================
-# 3. ЭВРИСТИКИ
-# ============================================================
+# Угадывает приоритет по ключевым словам в тексте
 
 def _guess_priority(text: str) -> str:
-    """Угадывает приоритет по ключевым словам в тексте."""
     t = text.lower()
     if any(w in t for w in ["urgent", "critical", "asap", "срочно", "критично"]):
         return "urgent"
@@ -251,16 +229,16 @@ def _guess_priority(text: str) -> str:
         return "low"
     return "medium"
 
+# Приводит приоритет к значениям из PriorityLevel модели Task
 
 def _normalize_priority(priority: str) -> str:
-    """Приводит приоритет к значениям из PriorityLevel модели Task."""
     allowed = {"low", "medium", "high", "urgent", "critical"}
     p = priority.lower().strip()
     return p if p in allowed else "medium"
 
+# Угадывает категорию по названию и ключевым словам
 
 def _guess_category(title: str, keywords: list[str]) -> str:
-    """Угадывает категорию по названию и ключевым словам."""
     text = (title + " " + " ".join(keywords)).lower()
 
     rules = [

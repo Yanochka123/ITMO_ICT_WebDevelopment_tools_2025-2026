@@ -6,24 +6,25 @@ import asyncio
 from pathlib import Path
 from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parents[3]
-LR1_SRC_DIR = BASE_DIR / "Lr1" / "src"
+CURRENT_DIR = Path(__file__).resolve().parent           # .../time-management-app/Task_2/
+PROJECT_ROOT = CURRENT_DIR.parent  
 
-if str(LR1_SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(LR1_SRC_DIR))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-ENV_PATH = BASE_DIR / "Lr1" / ".env"
+ENV_PATH = PROJECT_ROOT / ".env"
 if ENV_PATH.exists():
     load_dotenv(ENV_PATH)
 
-POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
-POSTGRES_DB = os.getenv("POSTGRES_DB", "time_management_db")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
+DB_NAME = os.getenv("DB_NAME", "time_management_db")
 
-SYNC_DB_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-ASYNC_DB_URL = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+SYNC_DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+ASYNC_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 
 from sqlalchemy import create_engine, delete, func, select as sa_select
 from sqlalchemy.exc import IntegrityError
@@ -31,8 +32,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel import Session, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-# Импорты из вашего проекта тайм-менеджера
-# Подставьте правильные пути под структуру вашего проекта
+
 from app.models import (
     User,
     Task,
@@ -42,9 +42,7 @@ from app.models import (
 )
 from app.models import PriorityLevel, TaskStatus
 
-# ============================================================
-# ПОДКЛЮЧЕНИЕ К БД
-# ============================================================
+# Подключение к БД
 
 sync_engine = create_engine(SYNC_DB_URL)
 async_engine = create_async_engine(ASYNC_DB_URL)
@@ -52,9 +50,8 @@ async_session_factory = async_sessionmaker(
     async_engine, class_=AsyncSession, expire_on_commit=False
 )
 
-# ============================================================
-# КОНСТАНТЫ ТЕХНИЧЕСКОГО ПОЛЬЗОВАТЕЛЯ
-# ============================================================
+# Константы нового пользователя
+
 
 PARSER_USERNAME = "parser"
 PARSER_EMAIL = "parser@local"
@@ -62,7 +59,6 @@ PARSER_FULL_NAME = "Technical Parser User"
 PARSER_DEFAULT_COLOR = "#6c757d"
 PARSER_DEFAULT_TAG_COLOR = "#6c757d"
 
-# Маппинг строкового приоритета из парсера → PriorityLevel
 PRIORITY_MAP = {
     "low": PriorityLevel.LOW,
     "medium": PriorityLevel.MEDIUM,
@@ -72,20 +68,17 @@ PRIORITY_MAP = {
 }
 
 
-# ============================================================
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (СИНХРОННЫЕ)
-# ============================================================
+# Синхронные функции созданния парсера
 
 def _get_or_create_parser_user_sync(session: Session) -> User:
-    """Возвращает/создаёт технического пользователя 'parser'."""
+    # Возвращает/создаёт технического пользователя 'parser'
     user = session.exec(
         select(User).where(User.username == PARSER_USERNAME)
     ).first()
     if user:
         return user
 
-    # hashed_password NOT NULL — кладём sha256 от случайной строки.
-    # Парсер не логинится, поэтому bcrypt не нужен.
+    # hashed_password NOT NULL — кладём sha256 от случайной строки
     import hashlib
     fake_password = hashlib.sha256(os.urandom(32)).hexdigest()
 
@@ -106,7 +99,7 @@ def _get_or_create_parser_user_sync(session: Session) -> User:
 
 
 def _get_or_create_category_sync(session: Session, name: str, user_id: int) -> Category:
-    """Возвращает/создаёт категорию по имени для пользователя."""
+    # Возвращает/создаёт категорию по имени для пользователя
     category = session.exec(
         select(Category).where(
             func.lower(Category.name) == name.lower(),
@@ -149,14 +142,10 @@ def _get_or_create_tag_sync(session: Session, name: str, user_id: int) -> Tag:
     return tag
 
 
-# ============================================================
-# СОХРАНЕНИЕ (СИНХРОННОЕ)
-# ============================================================
 
 def save_to_db_sync(page_data: dict, retries: int = 3):
     """
-    Сохраняет данные страницы в БД тайм-менеджера.
-    
+    Синхронная функция сохранения страниц в базу данных тайм-менеджера    
     page_data — результат extract_page_info():
         {
             "external_id": str,
@@ -186,9 +175,9 @@ def save_to_db_sync(page_data: dict, retries: int = 3):
                     )
                 ).first()
                 if existing:
-                    return  # уже есть — пропускаем
+                    return
 
-                # 2. Технический пользователь
+                # 2. Пользователь
                 parser_user = _get_or_create_parser_user_sync(session)
 
                 # 3. Категория
@@ -242,9 +231,7 @@ def save_to_db_sync(page_data: dict, retries: int = 3):
             raise e
 
 
-# ============================================================
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (АСИНХРОННЫЕ)
-# ============================================================
+# Асинхронные функции
 
 async def _get_or_create_parser_user_async(session: AsyncSession) -> User:
     result = await session.exec(
@@ -320,10 +307,7 @@ async def _get_or_create_tag_async(
     await session.flush()
     return tag
 
-
-# ============================================================
-# СОХРАНЕНИЕ (АСИНХРОННОЕ)
-# ============================================================
+# Асинхронное сохранение
 
 async def save_to_db_async(page_data: dict, retries: int = 3):
     """
@@ -394,14 +378,11 @@ async def save_to_db_async(page_data: dict, retries: int = 3):
             raise e
 
 
-# ============================================================
-# ОЧИСТКА БД
-# ============================================================
 
 def clean_db_sync():
     """
     Полностью очищает задачи, теги, категории и связи,
-    созданные парсером (пользователь 'parser').
+    созданные пользователем 'parser'
     """
     try:
         with Session(sync_engine) as session:
