@@ -1,0 +1,300 @@
+# Страница: [Wikipedia] Main page
+https://en.wikipedia.org/wiki/Main_Page
+
+# Страница: [Wikipedia] Article
+https://en.wikipedia.org/wiki/Pomodoro_Technique
+
+# Страница: [GitHub] GitHub CopilotWrite better code with AI
+https://github.com/features/copilot
+
+# Страница: [GitHub] ActionsAutomate any workflow
+https://github.com/features/actions
+
+# Страница: [GitHub] CodespacesInstant dev environments
+https://github.com/features/codespaces
+
+# Страница: [GitHub] IssuesPlan and track work
+https://github.com/features/issues
+
+# Страница: [GitHub] Code ReviewManage code changes
+https://github.com/features/code-review
+
+# Страница: [GitHub] Code QualityEnforce quality at merge
+https://github.com/features/code-quality
+
+# Страница: [GitHub] GitHub Advanced SecurityFind and fix vulnerabilities
+https://github.com/security/advanced-security
+
+# Страница: [GitHub] Startups
+https://github.com/enterprise/startups
+
+# Страница: [GitHub] View all use cases
+https://github.com/solutions/use-case
+
+# Страница: [GitHub] View all industries
+https://github.com/solutions/industry
+
+# Страница: [GitHub] Software Development
+https://github.com/resources/articles?topic=software-development
+
+# Страница: [GitHub] DevOps
+https://github.com/resources/articles?topic=devops
+
+# Страница: [GitHub] Security
+https://github.com/resources/articles?topic=security
+
+# Страница: [GitHub] View all topics
+https://github.com/resources/articles
+
+# Страница: [GitHub] Events & webinars
+https://github.com/resources/events
+
+# Страница: [GitHub] Ebooks & reports
+https://github.com/resources/whitepapers
+
+# Страница: [GitHub] Business insights
+https://github.com/solutions/executive-insights
+
+# Страница: [GitHub] GitHub SponsorsFund open source developers
+https://github.com/open-source/sponsors
+
+# Страница: [GitHub] Premium SupportEnterprise-grade 24/7 support
+https://github.com/enterprise/premium-support
+
+# Страница: [GitHub] My open source work is supported by the community
+https://github.com/sponsors/sindresorhus
+
+# Страница: [GitHub] Node.js
+https://github.com/sindresorhus/awesome-nodejs#readme
+
+# Страница: [GitHub] Cross-Platform
+https://github.com/bcoe/awesome-cross-platform-nodejs#readme
+
+# Страница: [GitHub] Frontend Development
+https://github.com/dypsilon/frontend-dev-bookmarks#readme
+
+# Страница: [GitHub] iOS
+https://github.com/vsouza/awesome-ios#readme
+
+# Страница: [GitHub] Android
+https://github.com/JStumpp/awesome-android#readme
+
+# Страница: [GitHub] IoT & Hybrid Apps
+https://github.com/weblancaster/awesome-IoT-hybrid#readme
+
+# Страница: [GitHub] Electron
+https://github.com/sindresorhus/awesome-electron#readme
+
+# Страница: [GitHub] Cordova
+https://github.com/busterc/awesome-cordova#readme
+
+# Страница: [GitHub] React Native
+https://github.com/jondot/awesome-react-native#readme
+
+# Страница: [GitHub] Containers
+https://github.com/Friz-zy/awesome-linux-containers#readme
+
+# Страница: [GitHub] eBPF
+https://github.com/zoidbergwill/awesome-ebpf#readme
+
+# Страница: [GitHub] Arch-based Projects
+https://github.com/PandaFoss/Awesome-Arch#readme
+
+# Страница: [GitHub] AppImage
+https://github.com/AppImageCommunity/awesome-appimage#readme
+
+# Страница: [GitHub] Omarchy
+https://github.com/aorumbayev/awesome-omarchy#readme
+
+# Страница: [GitHub] Screensavers
+https://github.com/agarrharr/awesome-macos-screensavers#readme
+
+# Страница: [GitHub] Apps
+https://github.com/jaywcjlove/awesome-mac#readme
+
+# Страница: [GitHub] Open Source Apps
+https://github.com/serhii-londar/open-source-mac-os-apps#readme
+
+# Страница: [GitHub] watchOS
+https://github.com/yenchenlin/awesome-watchos#readme
+
+# Страница: [GitHub] JVM
+https://github.com/deephacks/awesome-jvm#readme
+
+# Страница: [GitHub] Salesforce
+https://github.com/mailtoharshit/awesome-salesforce#readme
+
+# Страница: [GitHub] Amazon Web Services
+https://github.com/donnemartin/awesome-aws#readme
+
+# Страница: [GitHub] Windows
+https://github.com/0pandadev/awesome-windows#readme
+
+# Страница: [GitHub] PowerToys Run Plugins
+https://github.com/hlaueriksson/awesome-powertoys-run-plugins#readme
+
+# Страница: [GitHub] IPFS
+https://github.com/ipfs/awesome-ipfs#readme
+
+# Страница: [GitHub] Fuse
+https://github.com/fuse-compound/awesome-fuse#readme
+
+# Страница: [GitHub] Heroku
+https://github.com/ianstormtaylor/awesome-heroku#readme
+
+# Страница: [GitHub] Raspberry Pi
+https://github.com/thibmaek/awesome-raspberry-pi#readme
+
+# Страница: [GitHub] WebExtensions
+https://github.com/fregante/Awesome-WebExtensions#readme
+
+# Страница: [GitHub] Smart TV
+https://github.com/vitalets/awesome-smart-tv#readme
+
+# Страница: [GitHub] GNOME
+https://github.com/Kazhnuz/awesome-gnome#readme
+
+# Страница: [GitHub] KDE
+https://github.com/francoism90/awesome-kde#readme
+
+# Страница: [GitHub] .NET
+https://github.com/quozd/awesome-dotnet#readme
+
+# Страница: [GitHub] Core
+https://github.com/thangchung/awesome-dotnet-core#readme
+
+# Страница: [GitHub] Roslyn
+https://github.com/ironcev/awesome-roslyn#readme
+
+# Страница: [GitHub] DigitalOcean
+https://github.com/jonleibowitz/awesome-digitalocean#readme
+
+# Страница: [GitHub] Flutter
+https://github.com/Solido/awesome-flutter#readme
+
+# Страница: [GitHub] Home Assistant
+https://github.com/frenck/awesome-home-assistant#readme
+
+# Страница: [GitHub] IBM Cloud
+https://github.com/victorshinya/awesome-ibmcloud#readme
+
+# Страница: [GitHub] Firebase
+https://github.com/jthegedus/awesome-firebase#readme
+
+# Страница: [GitHub] Adafruit IO
+https://github.com/adafruit/awesome-adafruitio#readme
+
+# Страница: [GitHub] Cloudflare
+https://github.com/irazasyed/awesome-cloudflare#readme
+
+# Страница: [GitHub] Actions on Google
+https://github.com/ravirupareliya/awesome-actions-on-google#readme
+
+# Страница: [GitHub] ESP
+https://github.com/agucova/awesome-esp#readme
+
+# Страница: [GitHub] Deno
+https://github.com/denolib/awesome-deno#readme
+
+# Страница: [GitHub] DOS
+https://github.com/balintkissdev/awesome-dos#readme
+
+# Страница: [GitHub] Nix
+https://github.com/nix-community/awesome-nix#readme
+
+# Страница: [GitHub] Integration
+https://github.com/stn1slv/awesome-integration#readme
+
+# Страница: [GitHub] Node-RED
+https://github.com/naimo84/awesome-nodered#readme
+
+# Страница: [GitHub] Low Code
+https://github.com/zenitysec/awesome-low-code#readme
+
+# Страница: [GitHub] Capacitor
+https://github.com/riderx/awesome-capacitor#readme
+
+# Страница: [GitHub] ArcGIS Developer
+https://github.com/Esri/awesome-arcgis-developer#readme
+
+# Страница: [GitHub] Bluetooth Low Energy
+https://github.com/dotintent/awesome-ble#readme
+
+# Страница: [GitHub] Uno Platform
+https://github.com/MartinZikmund/awesome-uno-platform#readme
+
+# Страница: [GitHub] Firebase Genkit
+https://github.com/xavidop/awesome-firebase-genkit#readme
+
+# Страница: [GitHub] Backstage
+https://github.com/shano/awesome-backstage#readme
+
+# Страница: [GitHub] JavaScript
+https://github.com/sorrycc/awesome-javascript#readme
+
+# Страница: [GitHub] Promises
+https://github.com/wbinnssmith/awesome-promises#readme
+
+# Страница: [GitHub] Standard Style
+https://github.com/standard/awesome-standard#readme
+
+# Страница: [GitHub] Must Watch Talks
+https://github.com/bolshchikov/js-must-watch#readme
+
+# Страница: [GitHub] Tips
+https://github.com/loverajoel/jstips#readme
+
+# Страница: [GitHub] Network Layer
+https://github.com/Kikobeats/awesome-network-js#readme
+
+# Страница: [GitHub] Micro npm Packages
+https://github.com/parro-it/awesome-micro-npm-packages#readme
+
+# Страница: [GitHub] Mad Science npm Packages
+https://github.com/feross/awesome-mad-science#readme
+
+# Страница: [GitHub] Maintenance Modules
+https://github.com/maxogden/maintenance-modules#readme
+
+# Страница: [GitHub] npm
+https://github.com/sindresorhus/awesome-npm#readme
+
+# Страница: [GitHub] AVA
+https://github.com/avajs/awesome-ava#readme
+
+# Страница: [GitHub] ESLint
+https://github.com/dustinspecker/awesome-eslint#readme
+
+# Страница: [GitHub] Functional Programming
+https://github.com/stoeffel/awesome-fp-js#readme
+
+# Страница: [GitHub] Observables
+https://github.com/sindresorhus/awesome-observables#readme
+
+# Страница: [GitHub] npm scripts
+https://github.com/RyanZim/awesome-npm-scripts#readme
+
+# Страница: [GitHub] 30 Seconds of Code
+https://github.com/30-seconds/30-seconds-of-code#readme
+
+# Страница: [GitHub] Ponyfills
+https://github.com/Richienb/awesome-ponyfills#readme
+
+# Страница: [GitHub] Swift
+https://github.com/matteocrippa/awesome-swift#readme
+
+# Страница: [GitHub] Education
+https://github.com/hsavit1/Awesome-Swift-Education#readme
+
+# Страница: [GitHub] Playgrounds
+https://github.com/uraimo/Awesome-Swift-Playgrounds#readme
+
+# Страница: [GitHub] Python
+https://github.com/vinta/awesome-python#readme
+
+# Страница: [GitHub] Asyncio
+https://github.com/timofurrer/awesome-asyncio#readme
+
+# Страница: [GitHub] Scientific Audio
+https://github.com/faroit/awesome-python-scientific-audio#readme
+

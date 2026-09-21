@@ -1,242 +1,218 @@
-let token = localStorage.getItem('token');
-let currentUser = null;
+// static/script.js
 
-// Check if user is logged in
-if (token) {
-    loadTasks();
-    loadStats();
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('user-info').style.display = 'block';
+// ===== Утилиты для работы с токеном =====
+function getToken() {
+    return localStorage.getItem('access_token');
 }
 
-// Login function
-async function login() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    const formData = new FormData();
-    formData.append('username', email);
-    formData.append('password', password);
-    
-    try {
-        const response = await fetch('/auth/login', {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            token = data.access_token;
-            localStorage.setItem('token', token);
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('user-info').style.display = 'block';
-            loadTasks();
-            loadStats();
-        } else {
-            alert('Login failed');
-        }
-    } catch (error) {
-        alert('Error: ' + error.message);
+function setToken(token) {
+    localStorage.setItem('access_token', token);
+}
+
+function clearToken() {
+    localStorage.removeItem('access_token');
+}
+
+// ===== Обёртка над fetch с автоматическим добавлением токена =====
+async function authFetch(url, options = {}) {
+    const token = getToken();
+    const headers = { ...(options.headers || {}) };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
     }
-}
+    const response = await fetch(url, { ...options, headers });
 
-// Register function
-async function register() {
-    const username = document.getElementById('reg-username').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    
-    try {
-        const response = await fetch('/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, email, password })
-        });
-        
-        if (response.ok) {
-            alert('Registration successful! Please login.');
-            showLogin();
-        } else {
-            const error = await response.json();
-            alert('Registration failed: ' + error.detail);
-        }
-    } catch (error) {
-        alert('Error: ' + error.message);
+    if (response.status === 401) {
+        clearToken();
+        showLogin();
+        throw new Error('Unauthorized');
     }
+    return response;
 }
 
-// Show register form
-function showRegister() {
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('register-form').style.display = 'block';
-}
-
-// Show login form
+// ===== Показ/скрытие формы логина =====
 function showLogin() {
-    document.getElementById('register-form').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
+    document.getElementById('loginSection').style.display = 'block';
+    document.getElementById('appContent').style.display = 'none';
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.style.display = 'none';
 }
 
-// Logout
-function logout() {
-    localStorage.removeItem('token');
-    token = null;
-    document.getElementById('user-info').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
-    document.getElementById('tasks-container').innerHTML = '';
+function showApp() {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
 }
 
-// Load tasks
-async function loadTasks() {
-    try {
-        const response = await fetch('/tasks/', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (response.ok) {
-            const tasks = await response.json();
-            displayTasks(tasks);
-        } else if (response.status === 401) {
-            logout();
-        }
-    } catch (error) {
-        console.error('Error loading tasks:', error);
-    }
-}
+// ===== Логин =====
+async function login(email, password) {
+    const body = new URLSearchParams();
+    body.append('username', email);
+    body.append('password', password);
 
-// Load statistics
-async function loadStats() {
-    try {
-        const response = await fetch('/tasks/stats', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (response.ok) {
-            const stats = await response.json();
-            document.getElementById('total-tasks').textContent = stats.total;
-            document.getElementById('completed-tasks').textContent = stats.completed;
-            document.getElementById('pending-tasks').textContent = stats.pending;
-            document.getElementById('due-today').textContent = stats.due_today;
-        }
-    } catch (error) {
-        console.error('Error loading stats:', error);
-    }
-}
-
-// Display tasks
-function displayTasks(tasks) {
-    const container = document.getElementById('tasks-container');
-    container.innerHTML = '';
-    
-    tasks.sort((a, b) => b.priority - a.priority);
-    
-    tasks.forEach(task => {
-        const taskElement = document.createElement('div');
-        taskElement.className = `task-item ${task.status === 'completed' ? 'completed' : ''}`;
-        
-        const dueDate = task.due_date ? new Date(task.due_date).toLocaleString() : 'No due date';
-        
-        taskElement.innerHTML = `
-            <div class="task-info">
-                <h3>${task.title}</h3>
-                <p>${task.description || 'No description'}</p>
-                <small>Priority: ${task.priority} | Status: ${task.status} | Due: ${dueDate}</small>
-                ${task.time_spent > 0 ? `<small>Time spent: ${task.time_spent.toFixed(1)} hours</small>` : ''}
-            </div>
-            <div class="task-actions">
-                ${task.status !== 'completed' ? 
-                    `<button class="complete-btn" onclick="completeTask(${task.id})">Complete</button>` : 
-                    ''}
-                <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
-            </div>
-        `;
-        
-        container.appendChild(taskElement);
+    const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
     });
+
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.detail || 'Ошибка входа');
+    }
+
+    const data = await response.json();
+    setToken(data.access_token || data.token);
 }
 
-// Add task
-document.getElementById('task-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const title = document.getElementById('task-title').value;
-    const description = document.getElementById('task-description').value;
-    const priority = parseInt(document.getElementById('task-priority').value);
-    const due_date = document.getElementById('task-due-date').value;
-    
-    try {
-        const response = await fetch('/tasks/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                title,
-                description,
-                priority,
-                due_date: due_date || null
-            })
-        });
-        
-        if (response.ok) {
-            this.reset();
-            loadTasks();
+// ===== Инициализация =====
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('=== script.js загружен ===');
+
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (!loginForm) {
+        console.error('❌ loginForm не найден в DOM');
+        return;
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('=== submit перехвачен ===');
+        loginError.style.display = 'none';
+
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            await login(email, password);
+            console.log('=== логин успешен ===');
+            showApp();
             loadStats();
-        } else if (response.status === 401) {
-            logout();
-        } else {
-            alert('Failed to add task');
+            loadTasks();
+            setInterval(() => {
+                loadStats();
+                loadTasks();
+            }, 30000);
+        } catch (err) {
+            console.error('Ошибка логина:', err);
+            loginError.textContent = err.message;
+            loginError.style.display = 'block';
         }
-    } catch (error) {
-        alert('Error: ' + error.message);
+    });
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            clearToken();
+            showLogin();
+        });
+    }
+
+    // Если токен уже есть — сразу показываем приложение
+    if (getToken()) {
+        showApp();
+        loadStats();
+        loadTasks();
+        setInterval(() => {
+            loadStats();
+            loadTasks();
+        }, 30000);
+    } else {
+        showLogin();
     }
 });
 
-// Complete task
-async function completeTask(taskId) {
+// ===== Загрузка статистики =====
+async function loadStats() {
     try {
-        const response = await fetch(`/tasks/${taskId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ status: 'completed' })
-        });
-        
-        if (response.ok) {
-            loadTasks();
-            loadStats();
-        }
+        const response = await authFetch('/tasks/stats');
+        if (!response.ok) throw new Error('Failed to load stats');
+
+        const stats = await response.json();
+        document.getElementById('totalTasks').textContent = stats.total_tasks || 0;
+        document.getElementById('completedTasks').textContent = stats.completed_tasks || 0;
+        document.getElementById('inProgressTasks').textContent = stats.in_progress_tasks || 0;
+        document.getElementById('pendingTasks').textContent = stats.pending_tasks || 0;
     } catch (error) {
-        console.error('Error completing task:', error);
+        console.error('Error loading stats:', error);
+        if (error.message !== 'Unauthorized') {
+            document.querySelector('.stats-grid').innerHTML =
+                '<p class="error">Ошибка загрузки статистики</p>';
+        }
     }
 }
 
-// Delete task
-async function deleteTask(taskId) {
-    if (!confirm('Are you sure you want to delete this task?')) return;
-    
+// ===== Загрузка задач =====
+async function loadTasks() {
     try {
-        const response = await fetch(`/tasks/${taskId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (response.ok) {
-            loadTasks();
-            loadStats();
+        const response = await authFetch('/tasks/?limit=10');
+        if (!response.ok) throw new Error('Failed to load tasks');
+
+        const tasks = await response.json();
+        const tasksList = document.getElementById('tasksList');
+
+        if (tasks.length === 0) {
+            tasksList.innerHTML = '<p class="loading">Нет задач</p>';
+            return;
         }
+
+        tasksList.innerHTML = tasks.map(task => `
+            <div class="task-item">
+                <div class="task-title">${escapeHtml(task.title)}</div>
+                <div class="task-meta">
+                    <span class="task-status status-${task.status}">${getStatusLabel(task.status)}</span>
+                    <span class="task-priority priority-${task.priority}">${getPriorityLabel(task.priority)}</span>
+                    ${task.due_date ? `<span class="task-due">📅 ${formatDate(task.due_date)}</span>` : ''}
+                    ${task.progress > 0 ? `<span class="task-progress">${Math.round(task.progress)}%</span>` : ''}
+                </div>
+            </div>
+        `).join('');
     } catch (error) {
-        console.error('Error deleting task:', error);
+        console.error('Error loading tasks:', error);
+        if (error.message !== 'Unauthorized') {
+            document.getElementById('tasksList').innerHTML =
+                '<p class="error">Ошибка загрузки задач</p>';
+        }
     }
+}
+
+// ===== Вспомогательные функции =====
+function getStatusLabel(status) {
+    const labels = {
+        'pending': 'Ожидает',
+        'in_progress': 'В процессе',
+        'completed': 'Выполнена',
+        'cancelled': 'Отменена',
+        'overdue': 'Просрочена'
+    };
+    return labels[status] || status;
+}
+
+function getPriorityLabel(priority) {
+    const labels = {
+        'low': 'Низкий',
+        'medium': 'Средний',
+        'high': 'Высокий',
+        'urgent': 'Срочный',
+        'critical': 'Критический'
+    };
+    return labels[priority] || priority;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

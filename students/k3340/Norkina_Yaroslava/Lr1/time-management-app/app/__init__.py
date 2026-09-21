@@ -1,5 +1,4 @@
-from app import models, schemas, database, crud
-from app.routes import auth, tasks, time_entries, analytics, categories, tags, schedules
+# app/__init__.py
 
 __version__ = "2.0.0"
 __all__ = [
@@ -7,11 +6,4 @@ __all__ = [
     "schemas",
     "database",
     "crud",
-    "auth",
-    "tasks",
-    "time_entries",
-    "analytics",
-    "categories",
-    "tags",
-    "schedules"
 ]

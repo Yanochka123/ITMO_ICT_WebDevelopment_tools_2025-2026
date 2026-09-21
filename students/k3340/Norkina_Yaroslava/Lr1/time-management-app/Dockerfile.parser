@@ -1,0 +1,32 @@
+# time-manager-app/Dockerfile.parser
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.parser.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.parser.txt
+
+# Копируем парсер и app (для моделей)
+COPY Task_2/ ./Task_2/
+COPY app/ ./app/
+
+# НЕ копируем .env
+
+RUN useradd -m -u 1000 parseruser && chown -R parseruser:parseruser /app
+USER parseruser
+
+WORKDIR /app/Task_2
+
+EXPOSE 8001
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]

@@ -1,0 +1,19 @@
+# time-manager-app/.dockerignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.gitignore
+.venv/
+venv/
+f_api_env/
+*.md
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+
+# Исключаем .env из образа — переменные придут из environment
+.env
+app/.env

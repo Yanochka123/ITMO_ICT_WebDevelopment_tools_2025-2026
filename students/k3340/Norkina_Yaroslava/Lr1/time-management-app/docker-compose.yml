@@ -1,0 +1,78 @@
+# time-manager-app/docker-compose.yml
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: tm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tm_network
+
+  # FastAPI (тайм-менеджер)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: tm_api
+    restart: unless-stopped
+    environment:
+      # Внутри контейнера DB_HOST=postgres (имя сервиса)
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      PARSER_URL: http://parser:8001
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      parser:                                  # ← ждать парсер
+        condition: service_started
+    networks:
+      - tm_network
+
+  # Parser (FastAPI-обёртка)
+  parser:
+    build:
+      context: .
+      dockerfile: Dockerfile.parser
+    container_name: tm_parser
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}  
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tm_network
+
+volumes:
+  postgres_data:
+
+networks:
+  tm_network:
+    driver: bridge

@@ -1,0 +1,1410 @@
+# Лабораторная работа №1. Реализация базы данных и соответствие Pydantic
+
+
+Была создана БД для программы тайм-менеджера, согласно описанию в варианте. На основе предоставленных данных о функционале был создан код для запуска проекта тайм-менеджера через файл main.py с временной БД и API эндпоинтами, аналогично практике 1.
+
+### Термины и основные понятия.
+FastAPI — это веб-фреймворк Python. Документация - https://fastapi.tiangolo.com/ru/
+
+app = FastAPI()  - класс, отвечающий за реализацию сервера и возможность реализации методов представления. https://fastapi.tiangolo.com/reference/fastapi/
+
+Методы представления - способы обработки разных HTTP-запросов. Для каждого представления существует свой метод-декоратор. 
+
+Декоратор - это метод с значком @app, например 
+@app.get("/warriors_list"), который создает маршрут в указанном месте сайта с результатами, возвращаемыми обернутой функцией.
+
+Метод, используемый для маршрута - это GET, POST, PUT, DELETE и тп.
+
+Uvicorn - веб-сервер, поддерживающий FastApi. https://www.uvicorn.org/
+
+АПИ - application programming interface, набор правил и протоколов, позволяющий вашему сервису взаимодействовать с другими программмами.
+
+АПИ-эндпоинты - специальные методы, описывающие HTTP-запросы внутри веб-приложения. Точки  доступа (URL), которые принимают http-запросы и возвращают ответы https://fastapi.tiangolo.com/reference/fastapi/#fastapi.FastAPI.get
+
+SQLAlchemy - это инструмент разработки на Python, позволяющий работать с базой данных.
+
+Pydantic - одна из множества совместимых с FastApi python-библиотек для валидации данных (упрощает аннотирование типов и сериализацию). 
+
+Pydantic-модель - это код файла в репозитории models.py. Включает в себя зависимости 
+from pydantic import BaseModel и другие сущесствующие классы данных.
+Аннотация эндпоинтов - явное задание типов для созданных методов.
+
+## Схема базы данных
+Для варианта с разработкой сервиса управления временем была разработана схема базы данных, которая далее будет реализована в PostgreSQL.
+<img width="2776" height="2107" alt="Document" src="https://github.com/user-attachments/assets/88b091d8-9e96-4f95-95f5-1eeb681e7198" />
+Краткое описание основных сущностей базы данных Time Management App
+1. users — Пользователи
+Хранит учетные записи пользователей: логин, email, хеш пароля, ФИО, настройки уведомлений, статус активности. Является центральной сущностью, связывающей все остальные данные с конкретным пользователем.
+
+2. categories — Категории задач
+Группирует задачи по темам (например, "Работа", "Личное", "Обучение"). Позволяет фильтровать и анализировать время по категориям.
+
+3. tags — Теги
+Гибкие метки для задач (например, "Срочно", "Важно", "Проект А"). В отличие от категорий, задача может иметь несколько тегов (связь многие-ко-многим).
+
+4. task_tags — Связь задач и тегов
+Ассоциативная таблица для реализации связи многие-ко-многим между задачами и тегами.
+
+5. tasks — Задачи
+Основная сущность приложения. Хранит название, описание, статус, приоритет, сроки, оценку времени, прогресс, а также связи с пользователем, категорией и родительской задачей (для подзадач).
+
+6. recurring_tasks — Правила повторения задач
+Хранит настройки для периодических задач: тип повторения (ежедневно, еженедельно и т.д.), интервал, дату окончания, количество повторений. Позволяет автоматически создавать новые экземпляры задач по расписанию. Таблица recurring_tasks является отдельной сущностью, потому что:
+Повторяющаяся задача — это не одна задача, а шаблон для создания многих задач
+У нее есть свои специфические атрибуты: интервал, количество повторений, дата окончания
+Нужно хранить информацию о том, сколько раз уже создана задача и когда создавать следующую
+
+7. time_entries — Записи о затраченном времени
+Фиксирует временные сессии работы над задачами: время начала, окончания, длительность. Используется для аналитики продуктивности и сравнения планового и фактического времени. time_entries нужна, чтобы:
+Фиксировать точное время работы над задачей
+Анализировать, сколько времени реально тратится
+Сравнивать оценку и актуальное время работы
+Понимать, сколько времени уходит на разные категории задач
+Именно отдельная таблица нужна для того, чтобы удобнее собирать статистику пользователя и удобно вычислять все необходимые сведения о времени работы.
+<img width="1116" height="110" alt="image" src="https://github.com/user-attachments/assets/993bfe3b-0174-403f-a0dd-2fb61f2027a6" />
+
+
+9. daily_schedules — Ежедневное расписание
+Хранит плановое расписание на день: начало и конец рабочего дня, обеденные перерывы, выходные/праздничные дни. Помогает планировать задачи с учетом рабочего времени.
+
+10. notifications — Уведомления
+Система оповещений: напоминания о дедлайнах, отчеты, события. Хранит заголовок, сообщение, тип, время отправки и статус прочтения.
+
+11. user_preferences — Настройки пользователя
+Индивидуальные настройки интерфейса: тема оформления, цвет акцентов, время напоминаний, рабочие часы, дни недели. Расширяет базовую таблицу пользователей.
+
+12. sessions — Сессии авторизации
+Управляет активными сессиями пользователей: JWT-токен, информация об устройстве, IP-адрес, время входа и истечения сессии. Обеспечивает безопасность и контроль доступа.
+
+13. analytics — Аналитика
+Сбор статистики по дням: количество созданных и выполненных задач, затраченное время, продуктивность, распределение по категориям и приоритетам. Используется для отчетов и визуализации эффективности.
+
+Связи
+Сущность	Связь	С кем
+
+users	1:N	categories, tags, tasks, time_entries, daily_schedules, notifications, user_preferences, sessions, recurring_tasks, analytics
+
+categories	1:N	tasks
+
+tags	N:N	tasks (через task_tags)
+
+tasks	1:N	time_entries, notifications
+
+tasks	1:N	tasks (подзадачи)
+
+tasks	1:1	recurring_tasks
+
+tasks	N:N	tags (через task_tags)
+
+
+Временная база данных с расширенными таблицами для вложенных объектов
+
+```python
+# Главная таблица - задачи с вложенными объектами
+
+temp_bd: List[Dict[str, Any]] = [
+    {
+        "id": 1,
+        "title": "Разработка дизайна для веб-приложения",
+        "description": "Создать макеты главной страницы и личного кабинета в Figma",
+        "status": "in_progress",
+        "priority": "high",
+        "deadline": "2026-07-20T18:00:00",
+        "estimated_time": 240,  # 4 часа
+        "created_at": "2026-07-13T09:00:00",
+        "updated_at": "2026-07-13T09:00:00",
+        "completed_at": None,
+        # Одиночный вложенный объект
+        "category": {
+            "id": 1,
+            "name": "Дизайн",
+            "description": "Задачи по дизайну интерфейсов",
+            "color": "#FF6B6B"
+        },
+        # Список объектов - теги
+        "tags": [
+            {"id": 1, "name": "Дизайн", "color": "#FF6B6B"},
+            {"id": 2, "name": "Figma", "color": "#A8E6CF"}
+        ],
+        # Список объектов - подзадачи
+        "subtasks": [
+            {"id": 1, "title": "Создать структуру страниц", "is_completed": True, "created_at": "2026-07-13T09:30:00"},
+            {"id": 2, "title": "Разработать главный экран", "is_completed": False, "created_at": "2026-07-13T10:00:00"},
+            {"id": 3, "title": "Разработать личный кабинет", "is_completed": False, "created_at": "2026-07-13T10:30:00"}
+        ],
+        # Список объектов - временные записи
+        "time_entries": [
+            {"id": 1, "start_time": "2026-07-13T09:00:00", "end_time": "2026-07-13T11:00:00", "duration_minutes": 120, "description": "Создание структуры"},
+            {"id": 2, "start_time": "2026-07-13T12:00:00", "end_time": "2026-07-13T14:00:00", "duration_minutes": 120, "description": "Разработка главного экрана"}
+        ],
+        "is_recurring": False,
+        "recurring_rule": None
+    },
+    {
+        "id": 2,
+        "title": "Написание документации к проекту",
+        "description": "Описать архитектуру, API и инструкцию по развертыванию",
+        "status": "pending",
+        "priority": "medium",
+        "deadline": "2026-07-25T23:59:00",
+        "estimated_time": 180,  # 3 часа
+        "created_at": "2026-07-12T14:00:00",
+        "updated_at": "2026-07-12T14:00:00",
+        "completed_at": None,
+        # Одиночный вложенный объект
+        "category": {
+            "id": 2,
+            "name": "Документация",
+            "description": "Создание и поддержка документации",
+            "color": "#4ECDC4"
+        },
+        # Список объектов - теги
+        "tags": [
+            {"id": 3, "name": "Документация", "color": "#4ECDC4"},
+            {"id": 4, "name": "Техническое", "color": "#95A5A6"}
+        ],
+        # Список объектов - подзадачи
+        "subtasks": [
+            {"id": 4, "title": "Описать архитектуру", "is_completed": False, "created_at": "2026-07-12T14:30:00"},
+            {"id": 5, "title": "Описать API", "is_completed": False, "created_at": "2026-07-12T15:00:00"},
+            {"id": 6, "title": "Написать инструкцию", "is_completed": False, "created_at": "2026-07-12T15:30:00"}
+        ],
+        # Список объектов - временные записи
+        "time_entries": [
+            {"id": 3, "start_time": "2026-07-12T14:00:00", "end_time": "2026-07-12T15:30:00", "duration_minutes": 90, "description": "Начало документации"}
+        ],
+        "is_recurring": False,
+        "recurring_rule": None
+    },
+    {
+        "id": 3,
+        "title": "Еженедельная встреча команды",
+        "description": "Обсуждение текущих задач и планирование на следующую неделю",
+        "status": "completed",
+        "priority": "urgent",
+        "deadline": "2026-07-13T11:00:00",
+        "estimated_time": 60,  # 1 час
+        "created_at": "2026-07-10T10:00:00",
+        "updated_at": "2026-07-13T11:30:00",
+        "completed_at": "2026-07-13T11:00:00",
+        # Одиночный вложенный объект
+        "category": {
+            "id": 3,
+            "name": "Совещания",
+            "description": "Плановые и внеплановые встречи",
+            "color": "#FFD93D"
+        },
+        # Список объектов - теги
+        "tags": [
+            {"id": 5, "name": "Команда", "color": "#FFD93D"},
+            {"id": 6, "name": "Еженедельное", "color": "#6C5B7B"}
+        ],
+        # Список объектов - подзадачи
+        "subtasks": [
+            {"id": 7, "title": "Подготовить отчет", "is_completed": True, "created_at": "2026-07-12T09:00:00"},
+            {"id": 8, "title": "Провести встречу", "is_completed": True, "created_at": "2026-07-13T10:30:00"}
+        ],
+        # Список объектов - временные записи
+        "time_entries": [
+            {"id": 4, "start_time": "2026-07-13T10:00:00", "end_time": "2026-07-13T11:00:00", "duration_minutes": 60, "description": "Еженедельная встреча"}
+        ],
+        "is_recurring": True,
+        "recurring_rule": "weekly"
+    }
+]
+
+# Вспомогательные базы данных
+# Базы для вложенных объектов
+categories_bd = [
+    {"id": 1, "name": "Дизайн", "description": "Задачи по дизайну интерфейсов", "color": "#FF6B6B"},
+    {"id": 2, "name": "Документация", "description": "Создание и поддержка документации", "color": "#4ECDC4"},
+    {"id": 3, "name": "Совещания", "description": "Плановые и внеплановые встречи", "color": "#FFD93D"},
+    {"id": 4, "name": "Разработка", "description": "Программирование и разработка", "color": "#A8E6CF"}
+]
+
+tags_bd = [
+    {"id": 1, "name": "Дизайн", "color": "#FF6B6B"},
+    {"id": 2, "name": "Figma", "color": "#A8E6CF"},
+    {"id": 3, "name": "Документация", "color": "#4ECDC4"},
+    {"id": 4, "name": "Техническое", "color": "#95A5A6"},
+    {"id": 5, "name": "Команда", "color": "#FFD93D"},
+    {"id": 6, "name": "Еженедельное", "color": "#6C5B7B"},
+    {"id": 7, "name": "Бэкенд", "color": "#FF8C94"},
+    {"id": 8, "name": "Фронтенд", "color": "#87CEEB"}
+]
+```
+
+Файл schemas.py - Pydantic модели. В файле объявлены все основные модели для аннотирования данных
+```python
+# schemas.py
+from enum import Enum
+from typing import Optional, List
+from datetime import datetime
+from pydantic import BaseModel, Field
+
+# Перечисления для статусов и приоритетов
+class PriorityEnum(str, Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+class TaskStatusEnum(str, Enum):
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+# Модель для вложенного объекта: категория задачи
+class Category(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = ""
+    color: Optional[str] = "#808080"
+
+# Модель для вложенного объекта: тег задачи
+class Tag(BaseModel):
+    id: int
+    name: str
+    color: Optional[str] = "#808080"
+
+# Модель для вложенного объекта: подзадача
+class Subtask(BaseModel):
+    id: int
+    title: str
+    is_completed: bool = False
+    created_at: Optional[datetime] = None
+
+# Модель для вложенного объекта: временная запись
+class TimeEntry(BaseModel):
+    id: int
+    start_time: datetime
+    end_time: Optional[datetime] = None
+    duration_minutes: Optional[int] = 0
+    description: Optional[str] = ""
+
+# Модель для вложенного объекта: пиоритет
+class Priority(BaseModel):
+    id: int
+    level: PriorityEnum
+    label: str
+    color: str
+
+# Основная модель задачи
+class Task(BaseModel):
+    id: int
+    title: str
+    description: Optional[str] = ""
+    status: TaskStatusEnum = TaskStatusEnum.PENDING
+    priority: PriorityEnum = PriorityEnum.MEDIUM
+    deadline: Optional[datetime] = None
+    estimated_time: Optional[int] = None  # в минутах
+    created_at: datetime
+    updated_at: datetime
+    completed_at: Optional[datetime] = None
+    category: Optional[Category] = None  # Одиночный вложенный объект
+    tags: List[Tag] = []  # Список объектов
+    subtasks: List[Subtask] = []  # Список объектов
+    time_entries: List[TimeEntry] = []  # Список объектов
+    is_recurring: bool = False
+    recurring_rule: Optional[str] = None
+
+# Модели для создания и обновления задач
+class TaskCreate(BaseModel):
+    title: str = Field(..., max_length=200)
+    description: Optional[str] = ""
+    priority: PriorityEnum = PriorityEnum.MEDIUM
+    deadline: Optional[datetime] = None
+    estimated_time: Optional[int] = None
+    category_id: Optional[int] = None
+    tag_ids: Optional[List[int]] = []
+    is_recurring: bool = False
+    recurring_rule: Optional[str] = None
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = Field(None, max_length=200)
+    description: Optional[str] = None
+    status: Optional[TaskStatusEnum] = None
+    priority: Optional[PriorityEnum] = None
+    deadline: Optional[datetime] = None
+    estimated_time: Optional[int] = None
+    category_id: Optional[int] = None
+    tag_ids: Optional[List[int]] = None
+    is_recurring: Optional[bool] = None
+    recurring_rule: Optional[str] = None
+
+# Модели для дополнительных объектов
+class CategoryCreate(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    color: Optional[str] = "#808080"
+
+class TagCreate(BaseModel):
+    name: str
+    color: Optional[str] = "#808080"
+
+class SubtaskCreate(BaseModel):
+    title: str
+    is_completed: bool = False
+
+class TimeEntryCreate(BaseModel):
+    task_id: int
+    start_time: datetime
+    end_time: Optional[datetime] = None
+    description: Optional[str] = ""
+
+# Тип ответа для удаления
+class DeleteResponse(BaseModel):
+    status: int
+    message: str
+```
+Файл main.py - Основное приложение с временной БД. После реализации моделей были созданы API-эндпойнты с аннотированием
+```python
+# main.py
+from fastapi import FastAPI, HTTPException
+from typing import List, Dict, Any
+from datetime import datetime, timedelta
+from schemas import (
+    Task, TaskCreate, TaskUpdate, TaskStatusEnum, PriorityEnum,
+    Category, Tag, Subtask, TimeEntry,
+    CategoryCreate, TagCreate, SubtaskCreate, TimeEntryCreate,
+    DeleteResponse
+)
+
+app = FastAPI(
+    title="Time Management API",
+    description="API для управления задачами и временем",
+    version="1.0.0"
+)
+
+# Создание временной базы данных
+# Главная таблица - задачи с вложенными объектами
+
+temp_bd: List[Dict[str, Any]] = [
+    {
+        "id": 1,
+        "title": "Разработка дизайна для веб-приложения",
+        "description": "Создать макеты главной страницы и личного кабинета в Figma",
+        "status": "in_progress",
+        "priority": "high",
+        "deadline": "2026-07-20T18:00:00",
+        "estimated_time": 240,  # 4 часа
+        "created_at": "2026-07-13T09:00:00",
+        "updated_at": "2026-07-13T09:00:00",
+        "completed_at": None,
+        # Одиночный вложенный объект
+        "category": {
+            "id": 1,
+            "name": "Дизайн",
+            "description": "Задачи по дизайну интерфейсов",
+            "color": "#FF6B6B"
+        },
+        # Список объектов - теги
+        "tags": [
+            {"id": 1, "name": "Дизайн", "color": "#FF6B6B"},
+            {"id": 2, "name": "Figma", "color": "#A8E6CF"}
+        ],
+        # Список объектов - подзадачи
+        "subtasks": [
+            {"id": 1, "title": "Создать структуру страниц", "is_completed": True, "created_at": "2026-07-13T09:30:00"},
+            {"id": 2, "title": "Разработать главный экран", "is_completed": False, "created_at": "2026-07-13T10:00:00"},
+            {"id": 3, "title": "Разработать личный кабинет", "is_completed": False, "created_at": "2026-07-13T10:30:00"}
+        ],
+        # Список объектов - временные записи
+        "time_entries": [
+            {"id": 1, "start_time": "2026-07-13T09:00:00", "end_time": "2026-07-13T11:00:00", "duration_minutes": 120, "description": "Создание структуры"},
+            {"id": 2, "start_time": "2026-07-13T12:00:00", "end_time": "2026-07-13T14:00:00", "duration_minutes": 120, "description": "Разработка главного экрана"}
+        ],
+        "is_recurring": False,
+        "recurring_rule": None
+    },
+    {
+        "id": 2,
+        "title": "Написание документации к проекту",
+        "description": "Описать архитектуру, API и инструкцию по развертыванию",
+        "status": "pending",
+        "priority": "medium",
+        "deadline": "2026-07-25T23:59:00",
+        "estimated_time": 180,  # 3 часа
+        "created_at": "2026-07-12T14:00:00",
+        "updated_at": "2026-07-12T14:00:00",
+        "completed_at": None,
+        # Одиночный вложенный объект
+        "category": {
+            "id": 2,
+            "name": "Документация",
+            "description": "Создание и поддержка документации",
+            "color": "#4ECDC4"
+        },
+        # Список объектов - теги
+        "tags": [
+            {"id": 3, "name": "Документация", "color": "#4ECDC4"},
+            {"id": 4, "name": "Техническое", "color": "#95A5A6"}
+        ],
+        # Список объектов - подзадачи
+        "subtasks": [
+            {"id": 4, "title": "Описать архитектуру", "is_completed": False, "created_at": "2026-07-12T14:30:00"},
+            {"id": 5, "title": "Описать API", "is_completed": False, "created_at": "2026-07-12T15:00:00"},
+            {"id": 6, "title": "Написать инструкцию", "is_completed": False, "created_at": "2026-07-12T15:30:00"}
+        ],
+        # Список объектов - временные записи
+        "time_entries": [
+            {"id": 3, "start_time": "2026-07-12T14:00:00", "end_time": "2026-07-12T15:30:00", "duration_minutes": 90, "description": "Начало документации"}
+        ],
+        "is_recurring": False,
+        "recurring_rule": None
+    },
+    {
+        "id": 3,
+        "title": "Еженедельная встреча команды",
+        "description": "Обсуждение текущих задач и планирование на следующую неделю",
+        "status": "completed",
+        "priority": "urgent",
+        "deadline": "2026-07-13T11:00:00",
+        "estimated_time": 60,  # 1 час
+        "created_at": "2026-07-10T10:00:00",
+        "updated_at": "2026-07-13T11:30:00",
+        "completed_at": "2026-07-13T11:00:00",
+        # Одиночный вложенный объект
+        "category": {
+            "id": 3,
+            "name": "Совещания",
+            "description": "Плановые и внеплановые встречи",
+            "color": "#FFD93D"
+        },
+        # Список объектов - теги
+        "tags": [
+            {"id": 5, "name": "Команда", "color": "#FFD93D"},
+            {"id": 6, "name": "Еженедельное", "color": "#6C5B7B"}
+        ],
+        # Список объектов - подзадачи
+        "subtasks": [
+            {"id": 7, "title": "Подготовить отчет", "is_completed": True, "created_at": "2026-07-12T09:00:00"},
+            {"id": 8, "title": "Провести встречу", "is_completed": True, "created_at": "2026-07-13T10:30:00"}
+        ],
+        # Список объектов - временные записи
+        "time_entries": [
+            {"id": 4, "start_time": "2026-07-13T10:00:00", "end_time": "2026-07-13T11:00:00", "duration_minutes": 60, "description": "Еженедельная встреча"}
+        ],
+        "is_recurring": True,
+        "recurring_rule": "weekly"
+    }
+]
+
+# Вспомогательные базы данных
+# Базы для вложенных объектов
+categories_bd = [
+    {"id": 1, "name": "Дизайн", "description": "Задачи по дизайну интерфейсов", "color": "#FF6B6B"},
+    {"id": 2, "name": "Документация", "description": "Создание и поддержка документации", "color": "#4ECDC4"},
+    {"id": 3, "name": "Совещания", "description": "Плановые и внеплановые встречи", "color": "#FFD93D"},
+    {"id": 4, "name": "Разработка", "description": "Программирование и разработка", "color": "#A8E6CF"}
+]
+
+tags_bd = [
+    {"id": 1, "name": "Дизайн", "color": "#FF6B6B"},
+    {"id": 2, "name": "Figma", "color": "#A8E6CF"},
+    {"id": 3, "name": "Документация", "color": "#4ECDC4"},
+    {"id": 4, "name": "Техническое", "color": "#95A5A6"},
+    {"id": 5, "name": "Команда", "color": "#FFD93D"},
+    {"id": 6, "name": "Еженедельное", "color": "#6C5B7B"},
+    {"id": 7, "name": "Бэкенд", "color": "#FF8C94"},
+    {"id": 8, "name": "Фронтенд", "color": "#87CEEB"}
+]
+
+# Счетчики для генерации ID
+task_id_counter = 4
+category_id_counter = 5
+tag_id_counter = 9
+subtask_id_counter = 9
+time_entry_id_counter = 5
+
+# CRUD эндпойнты
+
+# GET: Получить все задачи
+@app.get("/tasks", response_model=List[Task])
+def get_all_tasks() -> List[Task]:
+    """
+    Получить список всех задач с вложенными объектами
+    """
+    return temp_bd
+
+
+# GET: Получить задачу по ID
+@app.get("/tasks/{task_id}", response_model=Task)
+def get_task_by_id(task_id: int) -> Dict[str, Any]:
+    """
+    Получить задачу по ID с её вложенными объектами
+    """
+    task = next((task for task in temp_bd if task["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    return task
+
+
+# GET: Получить задачи по статусу
+@app.get("/tasks/status/{status}", response_model=List[Task])
+def get_tasks_by_status(status: TaskStatusEnum) -> List[Dict[str, Any]]:
+    """
+    Получить задачи по статусу
+    """
+    return [task for task in temp_bd if task["status"] == status]
+
+
+# GET: Получить задачи по приоритету
+@app.get("/tasks/priority/{priority}", response_model=List[Task])
+def get_tasks_by_priority(priority: PriorityEnum) -> List[Dict[str, Any]]:
+    """
+    Получить задачи по приоритету
+    """
+    return [task for task in temp_bd if task["priority"] == priority]
+
+
+# POST: Создать новую задачу
+@app.post("/tasks", response_model=Task, status_code=201)
+def create_task(task: TaskCreate) -> Dict[str, Any]:
+    """
+    Создать новую задачу с вложенными объектами
+    """
+    global task_id_counter
+    
+    # Получаем категорию если указана
+    category = None
+    if task.category_id:
+        category = next((cat for cat in categories_bd if cat["id"] == task.category_id), None)
+    
+    # Получаем теги если указаны
+    tags = []
+    if task.tag_ids:
+        tags = [tag for tag in tags_bd if tag["id"] in task.tag_ids]
+    
+    new_task = {
+        "id": task_id_counter,
+        "title": task.title,
+        "description": task.description,
+        "status": task.priority,  # Исправлено: статус должен быть TaskStatusEnum.PENDING
+        "priority": task.priority,
+        "deadline": task.deadline.isoformat() if task.deadline else None,
+        "estimated_time": task.estimated_time,
+        "created_at": datetime.now().isoformat(),
+        "updated_at": datetime.now().isoformat(),
+        "completed_at": None,
+        "category": category,
+        "tags": tags,
+        "subtasks": [],
+        "time_entries": [],
+        "is_recurring": task.is_recurring,
+        "recurring_rule": task.recurring_rule
+    }
+    
+    temp_bd.append(new_task)
+    task_id_counter += 1
+    return new_task
+
+
+# PUT: Обновить задачу
+@app.put("/tasks/{task_id}", response_model=Task)
+def update_task(task_id: int, task_update: TaskUpdate) -> Dict[str, Any]:
+    """
+    Обновить задачу по ID
+    """
+    task_index = next((i for i, t in enumerate(temp_bd) if t["id"] == task_id), None)
+    if task_index is None:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    
+    task = temp_bd[task_index]
+    
+    # Обновляем поля
+    update_data = task_update.dict(exclude_unset=True)
+    
+    if "title" in update_data:
+        task["title"] = update_data["title"]
+    if "description" in update_data:
+        task["description"] = update_data["description"]
+    if "status" in update_data:
+        task["status"] = update_data["status"]
+        if update_data["status"] == "completed":
+            task["completed_at"] = datetime.now().isoformat()
+    if "priority" in update_data:
+        task["priority"] = update_data["priority"]
+    if "deadline" in update_data:
+        task["deadline"] = update_data["deadline"].isoformat() if update_data["deadline"] else None
+    if "estimated_time" in update_data:
+        task["estimated_time"] = update_data["estimated_time"]
+    if "category_id" in update_data and update_data["category_id"] is not None:
+        category = next((cat for cat in categories_bd if cat["id"] == update_data["category_id"]), None)
+        task["category"] = category
+    if "tag_ids" in update_data and update_data["tag_ids"] is not None:
+        tags = [tag for tag in tags_bd if tag["id"] in update_data["tag_ids"]]
+        task["tags"] = tags
+    if "is_recurring" in update_data:
+        task["is_recurring"] = update_data["is_recurring"]
+    if "recurring_rule" in update_data:
+        task["recurring_rule"] = update_data["recurring_rule"]
+    
+    task["updated_at"] = datetime.now().isoformat()
+    temp_bd[task_index] = task
+    
+    return task
+
+
+# DELETE: Удалить задачу
+@app.delete("/tasks/{task_id}", response_model=DeleteResponse)
+def delete_task(task_id: int) -> Dict[str, Any]:
+    """
+    Удалить задачу по ID
+    """
+    task_index = next((i for i, t in enumerate(temp_bd) if t["id"] == task_id), None)
+    if task_index is None:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    
+    temp_bd.pop(task_index)
+    return {"status": 200, "message": f"Task with id {task_id} deleted successfully"}
+
+
+# API для вложенных объектов
+
+# Категории
+@app.get("/categories", response_model=List[Category])
+def get_all_categories() -> List[Dict[str, Any]]:
+    """Получить все категории"""
+    return categories_bd
+
+
+@app.post("/categories", response_model=Category, status_code=201)
+def create_category(category: CategoryCreate) -> Dict[str, Any]:
+    """Создать новую категорию"""
+    global category_id_counter
+    new_category = {
+        "id": category_id_counter,
+        "name": category.name,
+        "description": category.description,
+        "color": category.color
+    }
+    categories_bd.append(new_category)
+    category_id_counter += 1
+    return new_category
+
+
+@app.delete("/categories/{category_id}", response_model=DeleteResponse)
+def delete_category(category_id: int) -> Dict[str, Any]:
+    """Удалить категорию"""
+    category_index = next((i for i, c in enumerate(categories_bd) if c["id"] == category_id), None)
+    if category_index is None:
+        raise HTTPException(status_code=404, detail=f"Category with id {category_id} not found")
+    categories_bd.pop(category_index)
+    return {"status": 200, "message": f"Category with id {category_id} deleted successfully"}
+
+
+# Теги
+@app.get("/tags", response_model=List[Tag])
+def get_all_tags() -> List[Dict[str, Any]]:
+    """Получить все теги"""
+    return tags_bd
+
+
+@app.post("/tags", response_model=Tag, status_code=201)
+def create_tag(tag: TagCreate) -> Dict[str, Any]:
+    """Создать новый тег"""
+    global tag_id_counter
+    new_tag = {
+        "id": tag_id_counter,
+        "name": tag.name,
+        "color": tag.color
+    }
+    tags_bd.append(new_tag)
+    tag_id_counter += 1
+    return new_tag
+
+
+@app.delete("/tags/{tag_id}", response_model=DeleteResponse)
+def delete_tag(tag_id: int) -> Dict[str, Any]:
+    """Удалить тег"""
+    tag_index = next((i for i, t in enumerate(tags_bd) if t["id"] == tag_id), None)
+    if tag_index is None:
+        raise HTTPException(status_code=404, detail=f"Tag with id {tag_id} not found")
+    tags_bd.pop(tag_index)
+    return {"status": 200, "message": f"Tag with id {tag_id} deleted successfully"}
+
+
+# Подзадачи
+@app.post("/tasks/{task_id}/subtasks", response_model=Subtask, status_code=201)
+def add_subtask_to_task(task_id: int, subtask: SubtaskCreate) -> Dict[str, Any]:
+    """Добавить подзадачу к задаче"""
+    global subtask_id_counter
+    
+    task = next((t for t in temp_bd if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    
+    new_subtask = {
+        "id": subtask_id_counter,
+        "title": subtask.title,
+        "is_completed": subtask.is_completed,
+        "created_at": datetime.now().isoformat()
+    }
+    task["subtasks"].append(new_subtask)
+    subtask_id_counter += 1
+    return new_subtask
+
+
+@app.put("/tasks/{task_id}/subtasks/{subtask_id}", response_model=Subtask)
+def update_subtask(task_id: int, subtask_id: int, subtask: SubtaskCreate) -> Dict[str, Any]:
+    """Обновить подзадачу"""
+    task = next((t for t in temp_bd if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    
+    subtask_index = next((i for i, s in enumerate(task["subtasks"]) if s["id"] == subtask_id), None)
+    if subtask_index is None:
+        raise HTTPException(status_code=404, detail=f"Subtask with id {subtask_id} not found")
+    
+    task["subtasks"][subtask_index]["title"] = subtask.title
+    task["subtasks"][subtask_index]["is_completed"] = subtask.is_completed
+    return task["subtasks"][subtask_index]
+
+
+@app.delete("/tasks/{task_id}/subtasks/{subtask_id}", response_model=DeleteResponse)
+def delete_subtask(task_id: int, subtask_id: int) -> Dict[str, Any]:
+    """Удалить подзадачу"""
+    task = next((t for t in temp_bd if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    
+    subtask_index = next((i for i, s in enumerate(task["subtasks"]) if s["id"] == subtask_id), None)
+    if subtask_index is None:
+        raise HTTPException(status_code=404, detail=f"Subtask with id {subtask_id} not found")
+    
+    task["subtasks"].pop(subtask_index)
+    return {"status": 200, "message": f"Subtask with id {subtask_id} deleted successfully"}
+
+
+# Временные задачи
+@app.post("/tasks/{task_id}/time_entries", response_model=TimeEntry, status_code=201)
+def add_time_entry_to_task(task_id: int, time_entry: TimeEntryCreate) -> Dict[str, Any]:
+    """Добавить временную запись к задаче"""
+    global time_entry_id_counter
+    
+    task = next((t for t in temp_bd if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    
+    # Вычисляем длительность если указан end_time
+    duration = None
+    if time_entry.end_time:
+        duration = int((time_entry.end_time - time_entry.start_time).total_seconds() / 60)
+    
+    new_time_entry = {
+        "id": time_entry_id_counter,
+        "start_time": time_entry.start_time.isoformat(),
+        "end_time": time_entry.end_time.isoformat() if time_entry.end_time else None,
+        "duration_minutes": duration,
+        "description": time_entry.description
+    }
+    task["time_entries"].append(new_time_entry)
+    time_entry_id_counter += 1
+    return new_time_entry
+
+
+@app.get("/tasks/{task_id}/time_entries", response_model=List[TimeEntry])
+def get_task_time_entries(task_id: int) -> List[Dict[str, Any]]:
+    """Получить все временные записи для задачи"""
+    task = next((t for t in temp_bd if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+    return task["time_entries"]
+
+
+# Дополнительные задачи
+
+# GET: Получить задачи с приближающимся дедлайном
+@app.get("/tasks/upcoming_deadlines", response_model=List[Task])
+def get_tasks_with_upcoming_deadlines(hours: int = 24) -> List[Dict[str, Any]]:
+    """
+    Получить задачи, у которых дедлайн наступает в ближайшие N часов
+    """
+    now = datetime.now()
+    deadline_threshold = now + timedelta(hours=hours)
+    
+    result = []
+    for task in temp_bd:
+        if task["deadline"] and task["status"] != "completed":
+            deadline = datetime.fromisoformat(task["deadline"])
+            if now <= deadline <= deadline_threshold:
+                result.append(task)
+    return result
+
+
+# GET: Статистика по задачам
+@app.get("/tasks/statistics")
+def get_task_statistics() -> Dict[str, Any]:
+    """
+    Получить статистику по задачам
+    """
+    total = len(temp_bd)
+    completed = len([t for t in temp_bd if t["status"] == "completed"])
+    in_progress = len([t for t in temp_bd if t["status"] == "in_progress"])
+    pending = len([t for t in temp_bd if t["status"] == "pending"])
+    
+    # Общее время по всем задачам
+    total_time = 0
+    for task in temp_bd:
+        for entry in task["time_entries"]:
+            if entry["duration_minutes"]:
+                total_time += entry["duration_minutes"]
+    
+    # По приоритетам
+    by_priority = {}
+    for priority in PriorityEnum:
+        by_priority[priority.value] = len([t for t in temp_bd if t["priority"] == priority])
+    
+    return {
+        "total_tasks": total,
+        "completed_tasks": completed,
+        "in_progress_tasks": in_progress,
+        "pending_tasks": pending,
+        "completion_rate": round((completed / total * 100) if total > 0 else 0, 2),
+        "total_time_spent_minutes": total_time,
+        "tasks_by_priority": by_priority
+    }
+```
+Далее для запуска проекта была выполнена команда: uvicorn main:app --reload --port 8000
+Документация проекта после запуска доступна по адресу: http://127.0.0.1:8000/docs
+В итоге получилось создать минимально необходимые API,а также некоторые дополнительные API для описанной БД.
+Результаты работы всех методов представлены ниже.
+
+### Примеры использования API
+1.	Получить все задачи: GET /tasks
+
+Аннотирование <img width="974" height="563" alt="image" src="https://github.com/user-attachments/assets/72adf5db-241a-41da-b01a-ef52d9b07f97" />
+
+ 
+2.	Получить задачу по ID: GET /tasks/2
+
+<img width="1390" height="864" alt="image" src="https://github.com/user-attachments/assets/6d200c3a-053a-4304-85f5-89a790c54059" />
+
+3.	Создать задачу: POST /tasks с JSON-телом
+
+<img width="974" height="490" alt="image" src="https://github.com/user-attachments/assets/c653cf59-f796-44c9-a786-b356978a166b" />
+
+4.	Обновить задачу: PUT /tasks/1
+<img width="1386" height="766" alt="image" src="https://github.com/user-attachments/assets/ebfcada5-9170-4474-817d-efa359b0d94d" />
+<img width="1277" height="788" alt="image" src="https://github.com/user-attachments/assets/e49cb1e0-0dfd-45d6-b181-1e0aadb25978" />
+
+5.	Удалить задачу: DELETE /tasks/1
+<img width="1354" height="787" alt="image" src="https://github.com/user-attachments/assets/06d35ae8-9bf7-428e-a6f7-63f010099d96" />
+<img width="1337" height="859" alt="image" src="https://github.com/user-attachments/assets/ba73bc7a-1654-4700-864b-0e9a30f78ac7" />
+
+7.	Получить задачи с приближающимся дедлайном: GET /tasks/upcoming_deadlines?hours=48
+
+Дополнительно запрос был протестирован через терминал командой curl.exe -X GET "http://127.0.0.1:8000/api/tasks/deadlines/upcoming?hours=48" -v
+<img width="1333" height="740" alt="image" src="https://github.com/user-attachments/assets/fdfbe790-06b3-480b-8e8d-dfd41d4740ed" />
+
+<img width="1546" height="605" alt="image" src="https://github.com/user-attachments/assets/2cf23f3e-824d-4760-a09a-73339d3f7551" />
+
+9.	Получить статистику: GET /tasks/statistics
+<img width="1303" height="824" alt="image" src="https://github.com/user-attachments/assets/df0c37ab-86b0-4d47-8f10-72dc0d8ec950" />
+
+11.	Добавить подзадачу: POST /tasks/1/subtasks
+<img width="1255" height="803" alt="image" src="https://github.com/user-attachments/assets/97b4465d-ddaf-4c69-9005-97a02ea92128" />
+
+13.	Добавить временную запись: POST /tasks/1/time_entries
+<img width="1349" height="863" alt="image" src="https://github.com/user-attachments/assets/9fe87ea2-4a39-44cd-bdce-c55cbcf26e4e" />
+
+15.	Управление категориями: GET/POST/DELETE /categories
+<img width="1317" height="909" alt="image" src="https://github.com/user-attachments/assets/1dec8ee9-4717-44a3-9086-44d02ac9d08e" />
+<img width="1308" height="860" alt="image" src="https://github.com/user-attachments/assets/0c74df0f-ec2f-4e59-8702-389cb308e299" />
+<img width="1267" height="776" alt="image" src="https://github.com/user-attachments/assets/458dcc7a-9701-4fb1-9ddc-e5e4e93ce94b" />
+
+
+17.	Управление тегами: GET/POST/DELETE /tags
+<img width="1312" height="847" alt="image" src="https://github.com/user-attachments/assets/a73d2f50-6c01-4e28-8371-c80463296cdb" />
+<img width="1262" height="791" alt="image" src="https://github.com/user-attachments/assets/6a3ed90e-d0af-461a-b203-c955592e1b1b" />
+<img width="1312" height="846" alt="image" src="https://github.com/user-attachments/assets/204dabf3-51e7-488f-9464-fb911f8dd270" />
+
+Код полностью соответствует требованиям. Была создана временная БД с 3 записями, главная таблица имеет одиночный вложенный объект (category), а также объектов (tags, subtasks, time_entries). Были реализованы CRUD операции для главной таблицы, модели и API для вложенных объектов, использованы Pydantic модели и аннотированы эндпоинты.
+
+
+## Часть 2. Подключение к базе данных, SQLModel и Alembic
+
+Далее необходимо вместо временной базы данных перейти к реальной с использованием PostgreSQL, а также библиотеки для работы с моделями и аннотированием данных SQLModel. 
+
+### Термины.
+Объект БД - это ключевые компоненты, помогающие работать с данными. К ним относятся движок, сессия, модели таблиц( валидаторы Pydantic и ORM-модели для SQLAlchemy).
+SQLModel — это современная ORM-библиотека для Python, созданная Себастьяном Рамирезом (создателем FastAPI) в 2021 году. Она решает одну из главных проблем веб-разработки — дублирование кода между моделями базы данных и схемами валидации данных. 
+SQLModel позволяет использовать типизированные Pydantic-модели как ORM-таблицы SQLAlchemy. Это упрощает разработку, ускоряет создание API и устраняет дублирование кода между моделями БД и сериализаторами.
+
+Файл с подключением к БД - обычно называется bd.py или connection.py. D ytv jписывается способ подключения к БД и реализованы дополнительные методы, упрощающие инициализацию и взаимодействие с БД.
+
+Создание базы данных. 
+
+После установки самой программы POstgres, регистрации через PgAdmin и настройки пользователя, пароля, можно переходить к созданию самой базы данных для сервиса. 
+
+Через командную строку (cmd или PowerShell). Команда для создания базы данных PostgreSQL:
+```
+"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -c "CREATE DATABASE time_management_db;"
+```
+Другие комнанды для работы с БД через консоль.
+```
+"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -d time_management_db
+
+# Выполните SQL-запрос
+ALTER TABLE tasks ALTER COLUMN recurrence_rule DROP NOT NULL;
+# Проверьте результат
+\d tasks
+# Выйдите
+\q
+```
+
+После создания базы данных необходимо прописать в отельном файле db.py подключение к ней через SQLModel. Если база с таким именем не существует на сервере, движок не сможет подключиться и вызовет ошибку.
+```Python
+# app/database.py
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import QueuePool
+from dotenv import load_dotenv
+from urllib.parse import quote_plus
+from pathlib import Path
+from typing import Generator
+
+# Загружаем .env
+env_path = Path(__file__).parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
+# Получаем параметры
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
+DB_NAME = os.getenv("DB_NAME", "postgres")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+
+# Кодируем пароль для безопасной передачи в URL
+encoded_password = quote_plus(DB_PASSWORD)
+
+# Формируем строку подключения
+DATABASE_URL = f"postgresql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+# Выводим безопасную версию для отладки (без пароля)
+safe_url = DATABASE_URL
+if '@' in DATABASE_URL:
+    parts = DATABASE_URL.split('@')
+    if '://' in parts[0]:
+        user_pass = parts[0].split('://')[1]
+        safe_url = DATABASE_URL.replace(
+            user_pass, f"{user_pass.split(':')[0]}:****")
+print(f"Подключение к БД: {safe_url}")
+
+# Создаем движок
+engine = create_engine(
+    DATABASE_URL,
+    poolclass=QueuePool,
+    pool_size=10,
+    max_overflow=20,
+    pool_pre_ping=True,
+    echo=False
+)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+
+def get_db() -> Generator:
+    """Генератор сессий для FastAPI"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def init_db():
+    """Инициализация базы данных"""
+    Base.metadata.create_all(bind=engine)
+```
+Что такое db_url и как происходит подключение к движку БД.
+Создание базы данных в SQLAlchemy (и SQLModel) работает не так, как можно было бы ожидать. Они не создают саму базу данных. Вместо этого они работают с уже существующей базой данных, создавая внутри неё таблицы.
+
+Вся работа начинается с создания движка (Engine).
+``` Python
+from sqlalchemy import create_engine
+engine = create_engine("postgresql+psycopg2://scott:tiger@localhost:5432/mydatabase")
+```
+URL: Строка подключения содержит всю информацию, где находится база данных: тип СУБД (postgresql), драйвер (psycopg2), имя пользователя, пароль, хост, порт и имя базы данных (mydatabase).
+
+Нужно указать имя существующей базы данных в поле database. Если база с таким именем не существует на сервере, движок не сможет подключиться и вызовет ошибку.
+
+Создание таблиц — работа с существующей базой
+``` Python
+SQLModel.metadata.create_all(engine)
+```
+
+Система создает базу данных на сервере (например, через psql, pgAdmin, или в облачном сервисе), затем SQLAlchemy/SQLModel использует имя этой базы в URL для подключения к ней, создает таблицы внутри этой базы данных через код на Python.
+
+Также необходимо правильно настроить переменные окружения в .env:
+```Python
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=time_management_db
+DB_USER=postgres
+DB_PASSWORD=135papin
+SECRET_KEY=135papin
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
+
+Теперь, когда база данных готова, можно запустить приложение. При запуске возникла проблема, связанная с конфликтом библиотеки multipart на Windows. Ошибка возникла из-за того, что python-multipart пытается получить доступ к системному пути, который не существует. Это известная проблема с версией python-multipart 0.0.20 на Windows, поэтому необходимо доустановить нужные версии вручную: Successfully installed python-multipart-0.0.9.
+
+Полный список классов в schemas.py
+
+- TaskStatus, PriorityLevel, RecurrenceType - перечисления
+
+- UserBase, UserCreate, UserLogin, UserResponse, Token, TokenData - для аутентификации
+
+- CategoryBase, CategoryCreate, CategoryUpdate, CategoryResponse - для категорий
+
+- TagBase, TagCreate, TagUpdate, TagResponse - для тегов
+
+- TaskBase, TaskCreate, TaskUpdate, TaskResponse - для задач
+
+- TaskDetailResponse - для детальной информации о задаче
+
+- TimeEntryBase, TimeEntryCreate, TimeEntryUpdate, TimeEntryResponse - для временных записей
+
+- DailyScheduleBase, DailyScheduleCreate, DailyScheduleUpdate, DailyScheduleResponse - для расписаний
+
+- NotificationBase, NotificationCreate, NotificationUpdate, NotificationResponse - для уведомлений
+
+- DailySummaryResponse, WeeklySummaryResponse, CategoryBreakdownResponse, TaskStatisticsResponse - для аналитики
+
+- DeleteResponse - для ответов при удалении
+
+Далее необходимо написать реализацию запросов к базе данных, точнее изменить уже существующие запросы под особенности работы с SQLMOdel. Для этого прописывается метод-генератор get_session. Он используется для получения сессий, необходимых при выполнении запросов к БД через Dependencies.
+Объект сессий - этот объект позволяет выполнять запросы к базе данных через специальные методы библиотек SQLModel и SQLAlchemy. Содержит в себе параметр session c изначальным значением в виде класса Depends с аргументом в виде ссылки на генератор get_session.
+```
+session=Depends(get_session)
+```
+Класс Depends - отвечает за выполнение внедрения зависимостей в приложениях FastAPI. Класс Depends принимает функцию в качестве аргумента и передается в качестве аргумента функции в маршруте, требуя, чтобы условие зависимости было выполнено до инициализации любой операции внутри тела API-метода. https://fastapi.tiangolo.com/tutorial/dependencies/
+
+Дополнительно для реализации POST-запросов необходимо прописать отдельные модели, наследующиеся от базовых и имеющие поля с значениями. При этом базовые модели не инициализируются в БД.
+
+Инициализация в БД необходима, чтобы класс наследовался от SQLmodel с параметром Table=true.
+Методы для удаления. Для того чтобы изменить поведение ON DELETE для связанных моделей, необходимо указывать следующую конструкцию в агрументах класса Relationship при создании модели:
+sa_relationship_kwargs={
+        "cascade": "all, delete",
+    },
+
+
+### В итоге были реализованы GET-запросы, возвращающие модели с вложенными объектами. 
+Запрос на создание задачи:
+<img width="1357" height="618" alt="image" src="https://github.com/user-attachments/assets/c4252ef7-2d68-49e1-9b24-580500b48a6a" />
+Результат:
+<img width="1332" height="719" alt="image" src="https://github.com/user-attachments/assets/9bfbdeb0-3f4a-4ec4-93be-832c282ef0f7" />
+Запрос на создание задачи:
+<img width="1354" height="603" alt="image" src="https://github.com/user-attachments/assets/2cda89fc-1f58-476b-b4be-8b5b96fc5f0a" />
+Результат:
+<img width="1335" height="698" alt="image" src="https://github.com/user-attachments/assets/879fbe8c-9cdf-4799-ae7e-7d400ef97f08" />
+
+Запрос на создание категории: 
+<img width="1325" height="819" alt="image" src="https://github.com/user-attachments/assets/6fe31d2f-2077-41e2-b34d-81e216ba3ae4" />
+Результат
+<img width="1362" height="698" alt="image" src="https://github.com/user-attachments/assets/5198b629-33d6-4a9b-8b3d-fc2249e9a99f" />
+
+
+One-to-many (Категория → Задачи): При запросе задачи через GET /tasks/{task_id}, ответ включает объект category с полной информацией о категории (см. schemas.TaskResponse).
+<img width="1328" height="836" alt="image" src="https://github.com/user-attachments/assets/1e8bfe87-a5ee-4341-a9c6-346740861f91" />
+
+
+Получение всех тегов: 
+<img width="1320" height="705" alt="image" src="https://github.com/user-attachments/assets/915ff949-922e-4c22-a32e-72faf9aca7d5" />
+
+Many-to-many (Задачи ↔ Теги): При запросе задачи, ответ включает список tags с информацией о каждом теге (см. schemas.TaskResponse).
+<img width="1342" height="835" alt="image" src="https://github.com/user-attachments/assets/42019e50-41a4-4a53-9efe-d08fb9d9e829" />
+
+Создание подзадачи:
+<img width="1360" height="828" alt="image" src="https://github.com/user-attachments/assets/f840e31d-cc10-4c59-8940-4acad6c96ca7" />
+
+
+Self-referencing: При запросе задачи, ответ включает список подзадач с их деталями.
+
+В self-referential связи SQLAlchemy нужно понять, какая сторона «родитель», а какая «ребёнок». Обе стороны ссылаются на один и тот же класс Task и используют одно и то же FK-поле parent_task_id.
+SQLAlchemy выдает предупреждение: «Did you mean to set remote_side on the many-to-one side?» — то есть добавьте remote_side=[id] на сторону parent_task, чтобы она стала MANY-TO-ONE.
+Нужно явно описывать обе стороны связи с указанием атрибута для связи remote_side.
+
+Результат: 
+<img width="1208" height="833" alt="image" src="https://github.com/user-attachments/assets/c0083845-9d14-4369-9f7e-6c22729c8f02" />
+
+Это реализовано через модели Pydantic (TaskResponse), которые используют from_attributes = True для сериализации связанных SQLAlchemy-объектов.
+
+Удаление задачи
+<img width="1399" height="716" alt="image" src="https://github.com/user-attachments/assets/5c9d3503-491e-4a9c-8417-212f4c5e2a7d" />
+Удаление в проекте зависит от требуемой логики хранения данных. При удалении, например, задачи также каскадно удаляются все ее подзадачи, записи о времени, связи с тегами, а также уведомления и правила повторения данной задачи. 
+Что происходит при удалении задачи
+Связанная сущность	Параметр ondelete	Поведение при удалении задачи
+user_id (владелец)	CASCADE	Если удалить пользователя — все его задачи удаляются
+category_id (категория)	SET NULL	При удалении категории — поле category_id в задаче становится NULL
+parent_task_id (родительская задача)	CASCADE	При удалении родительской задачи — все подзадачи удаляются
+subtasks (подзадачи)	CASCADE (через relationship)	Подзадачи удаляются вместе с родительской задачей
+time_entries (записи времени)	cascade="all, delete-orphan"	Все временные записи задачи удаляются
+recurring_task (правило повторения)	cascade="all, delete-orphan"	Правило повторения удаляется вместе с задачей
+notifications (уведомления)	cascade="all, delete-orphan"	Все уведомления задачи удаляются
+tags (теги)	secondary=task_tags	Только связи в таблице task_tags удаляются, сами теги сохраняются
+
+
+
+## Часть 3. Интеграция Alembic в разрабатываемый проект: Миграции, ENV, GitIgnore и структура проекта
+Миграции - это безопасное вносение изменений в таблицы и БД проекта, процесс управления изменениями в структуре базы данных. В FastAPI для управления миграциями чаще всего используется инструмент Alembic, который тесно интегрирован с SQLAlchemy.  
+Эта библиотека разработана специально для ORM SQLAlchemy, и совместима с SQLModel. Подробнее можно прочитать на официальном сайте.
+
+script.py.mako - это шаблон генерации миграций
+
+```Python
+pip install alembic
+```
+
+Генерация папки с миграциями и сопутствующих файлов настроек:
+```Python
+alembic init migrations
+```
+
+Успешный запуск сервиса и создание всех миграций и таблиц БД
+<img width="1383" height="833" alt="image" src="https://github.com/user-attachments/assets/844a33e9-ad7f-49c3-bc68-159d64462b8c" />
+
+В результате работы над сервисом была оформлена файловая структура проекта с разделением кода, отвечающего за разную бизнес-логику и предметную область, на отдельные файлы и папки. 
+Проект организован следующим образом:
+
+time-management-app/  
+├── app/  
+│   ├── __init__.py          # Инициализация пакета  
+│   ├── main.py              # Точка входа, создание FastAPI-приложения  
+│   ├── database.py          # Настройка подключения к БД и сессий  
+│   ├── models.py            # SQLAlchemy-модели (таблицы БД)  
+│   ├── schemas.py           # Pydantic-схемы (валидация и сериализация)  
+│   ├── crud.py              # Функции для работы с БД (CRUD-операции)  
+│   ├── routes/              # Папка с маршрутами (контроллерами)  
+│   │   ├── __init__.py   
+│   │   ├── auth.py          # Маршруты для аутентификации  
+│   │   ├── tasks.py         # Маршруты для задач  
+│   │   ├── categories.py    # Маршруты для категорий  
+│   │   ├── tags.py          # Маршруты для тегов  
+│   │   └── ...              # (аналогично для time_entries, analytics, schedules)  
+│   ├── templates/           # HTML-шаблоны (для фронтенда, если есть)  
+│   └── static/              # Статические файлы (CSS, JS)  
+├── alembic/                 # Миграции базы данных  
+├── .env                     # Переменные окружения  
+└── requirements.txt         # Зависимости  
+
+Также была реализована аутентификация и авторизация по JWT-токену.
+Создание токена: функция create_access_token генерирует JWT с указанным сроком жизни (по умолчанию 30 минут).
+Проверка токена: функция get_current_user используется как зависимость (Depends) в защищённых маршрутах. Она получает токен из заголовка Authorization, декодирует и проверяет его. Затем извлекает email пользователя, находит пользователя в базе данных и возвращает его объект.
+Аутентификация реализована в файле app/routes/auth.py:
+``` Python
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from typing import List, Optional
+from app import models, schemas, crud
+from app.database import get_db
+import os
+import re
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+
+# Настройка хэширования
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Настройка JWT
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=True)
+
+SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-change-this-in-production")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# ===== Вспомогательные функции =====
+
+def create_access_token(data: dict):
+    """Создание JWT-токена"""
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Проверка пароля"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Хэширование пароля"""
+    return pwd_context.hash(password)
+
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+) -> models.User:
+    """Получение текущего пользователя по JWT-токену"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    user = crud.get_user_by_email(db, email=email)
+    if user is None:
+        raise credentials_exception
+
+    # Проверяем, активен ли пользователь
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is deactivated"
+        )
+
+    return user
+
+# ===== 1. Регистрация =====
+@router.post("/register", response_model=schemas.UserResponse)
+def register(
+    user: schemas.UserCreate,
+    db: Session = Depends(get_db)
+):
+    """
+    Регистрация нового пользователя.
+    """
+    # Проверка email на уникальность
+    db_user = crud.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Проверка username на уникальность
+    db_user_by_username = crud.get_user_by_username(db, username=user.username)
+    if db_user_by_username:
+        raise HTTPException(status_code=400, detail="Username already taken")
+
+    # Создаем пользователя
+    return crud.create_user(db=db, user=user)
+
+# ===== 2. Вход (получение токена) =====
+@router.post("/login", response_model=schemas.Token)
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    """
+    Вход в систему. Возвращает JWT-токен.
+    - **username**: email пользователя
+    - **password**: пароль
+    """
+    user = db.query(models.User).filter(models.User.email == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is deactivated"
+        )
+
+    access_token = create_access_token(data={"sub": user.email})
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+```
+В коде используются python-jose — это библиотека для JWT,  
+passlib + bcrypt — это сторонняя библиотека для хэширования.
+
+Для того, чтобы авторизоваться в системе как пользователь, необходимо:
+1) Зарегистрироваться - отправить POST-запрос на /auth/register с JSON-ом, содержащим username, email, password и, опционально, full_name.
+2) Вход (получение токена) - отправить POST-запрос на /auth/login с данными в поле username (нужно передать именно email) и password. В ответ вы получите access_token.
+3) Использование токена. При каждом запросе к защищённым эндпоинтам необходимо добавлять заголовок: Authorization: Bearer <ваш_access_token>.
+
+
+### Авторизация через Swagger UI:
+Нужно перейти на страницу документации (/docs), нажать на "Authorize" (или замок) в правом верхнем углу, в полях username и password ввести: email, password.
+Нажать "Authorize" и тестировать все защищённые эндпоинты прямо из документации.
+
+
+На данном этапе реализации существуют дополнительные АПИ-методы для получения информации о пользователе, списка пользователей и смене пароля.
+Итоговый список всех эндпоинтов аутентификации:
+Метод, эндпоинт, описание
+
+POST
+/auth/register
+Регистрация
+
+POST
+/auth/login
+Вход (получение токена)
+
+GET
+/auth/me
+Информация о текущем пользователе
+
+GET
+/auth/users
+Список пользователей
+<img width="1375" height="697" alt="image" src="https://github.com/user-attachments/assets/94c65157-6cfd-47f7-be1a-0a1578d30c0a" />
+
+
+PUT
+/auth/change-password
+Смена пароля
+
+POST
+/auth/reset-password
+Сброс пароля
+
+PUT
+/auth/profile
+Обновление профиля
+
+DELETE
+/auth/deactivate
+Деактивация аккаунта
+
+PUT
+/auth/activate/{user_id}
+Активация аккаунта
+
+
+### Тестирование запросов и функциональности.
+
+Регистрация и авторизация
+<img width="1358" height="757" alt="image" src="https://github.com/user-attachments/assets/a7654bd0-bb99-450b-9a90-bb2e9214a649" />
+<img width="1247" height="659" alt="image" src="https://github.com/user-attachments/assets/e139129f-2880-44e4-9cd8-646cf3c2cf97" />
+Вход с получением токена
+<img width="1390" height="843" alt="image" src="https://github.com/user-attachments/assets/96cfc5ed-a5c6-4e9b-a84a-21ffa18e1494" />
+<img width="1401" height="871" alt="image" src="https://github.com/user-attachments/assets/816874ea-2db3-4506-ab39-0a4496234ccd" />
+Успешно:
+<img width="1300" height="777" alt="image" src="https://github.com/user-attachments/assets/d897ba7f-5ed2-4a46-90e2-a73ff9aaa690" />
+
+В финальной версии был добавлен самый простой пользовательский интерфейс, где можно зайти под своим логином пользователю:
+<img width="1779" height="802" alt="image" src="https://github.com/user-attachments/assets/9b62b267-d867-4636-9dca-f1ca6b9f16e4" />
+
+Затем посмотреть текущую статистику выполненных задач и список из всех текущих задач. Данный интерфейс примитивный, но позволяет в дальнейшем расширять взаимодействие пользователя с уже существующим функционалом:
+<img width="1872" height="876" alt="image" src="https://github.com/user-attachments/assets/c0e38c01-760f-42e8-87a1-adfb5e5ec131" />
+<img width="1785" height="807" alt="image" src="https://github.com/user-attachments/assets/86751c25-dac8-4574-8c5e-cafd95ac1009" />
+
+## Итог
+Проект реализован на хорошем уровне, с правильной архитектурой. Функционируют основные компоненты аутентификации: регистрация, вход, JWT-проверка. Проведена работа с вложенными данными, реализованы основные Get-запросы one-to-many и many-to-many связей. Были добавлены несколько пользовательских эндпоинтов для получение профиля, смена пароля, чтобы сделать API более полным.
