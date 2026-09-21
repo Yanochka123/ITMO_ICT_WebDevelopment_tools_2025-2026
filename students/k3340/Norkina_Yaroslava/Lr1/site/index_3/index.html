@@ -1,0 +1,1154 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../index_2/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Лабораторная 3 - Документация</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#no3-fastapi-docker" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Документация" class="md-header__button md-logo" aria-label="Документация" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Документация
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Лабораторная 3
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Документация" class="md-nav__button md-logo" aria-label="Документация" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Документация
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Практика
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Лабораторная 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Лабораторная 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Лабораторная 3
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Лабораторная 3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Термины
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Использованные технологии
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сервисы Docker Compose
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Сервисы Docker Compose">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Таблица сервисов проекта
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Порты для подключения извне
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подзадача 1. Упаковка в Docker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Подзадача 1. Упаковка в Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ключевые моменты:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-fastapi-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подзадача 2. Вызов парсера из FastAPI по HTTP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Подзадача 2. Вызов парсера из FastAPI по HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Запуск
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Проверка
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вывод
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Термины
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Использованные технологии
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сервисы Docker Compose
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Сервисы Docker Compose">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Таблица сервисов проекта
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Порты для подключения извне
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подзадача 1. Упаковка в Docker
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Подзадача 1. Упаковка в Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ключевые моменты:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-fastapi-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подзадача 2. Вызов парсера из FastAPI по HTTP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Подзадача 2. Вызов парсера из FastAPI по HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Запуск
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Проверка
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вывод
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="no3-fastapi-docker">Лабораторная работа №3: Упаковка FastAPI приложения в Docker, Работа с источниками данных и Очереди</h1>
+<p>Была создана БД для программы тайм-менеджера, согласно описанию в варианте. На основе предоставленных данных о функционале был создан код для запуска проекта тайм-менеджмента через файл main.py с временной БД и API эндпоинтами, аналогично практике 1.</p>
+<p>Цель: научиться упаковывать FastAPI приложение в Docker, интегрировать парсер данных с базой данных и вызывать парсер через API и очередь.</p>
+<h2 id="_1">Термины</h2>
+<p>Контейнер — текущий экземпляр, который инкапсулирует необходимое ПО. Контейнеры всегда создаются из образов. Могут открывать порты и тома для взаимодействия с другими контейнерами и/или внешним миром, а также легко удаляются и пересоздаются заново за короткий промежуток времени.  </p>
+<p>Образ — основной элемент для каждого контейнера. После его создания каждый шаг кэшируется и может быть использован повторно (модель копирования при записи). В зависимости от образа может понадобиться некоторое время для его построения. Из них могут быть сразу запущены контейнеры.  </p>
+<p>Порт — TCP/UDP-порт в своем обычном представлении. Порты могут быть открыты для внешнего мира (доступы через основную ОС) или подсоединены к другим контейнерам — доступны только из тех контейнеров и невидимы для внешнего мира.  </p>
+<p>Образ контейнера можно сравнить с файлами программы, например python и каким-то файлом main.py.
+А сам контейнер (в отличие от образа контейнера) — это фактически запущенный экземпляр образа, сопоставимый с процессом. По сути, контейнер работает только тогда, когда в нём есть запущенный процесс (и обычно это один процесс). Контейнер останавливается, когда в нём не остаётся запущенных процессов.  </p>
+<p>Том — может быть описан как общая папка. Тома инициализируются при создании контейнера. Они спроектированы для хранения данных независимо от жизненного цикла контейнера.  </p>
+<p>Реестр — сервер, который хранит образы Docker. Функционирует по аналогии с Github — можно вытянуть образ, чтобы развернуть его локально, а затем закинуть обратно в реестр.<br />
+Docker Hub — реестр с веб-интерфейсом, созданный Docker Inc. Он хранит большое количество Docker-образов с разным ПО. Docker Hub является источником «официальных» Docker-образов, созданных командой Docker. Официальные образы содержат списки своих потенциальных уязвимостей. Эта информация доступна для каждого авторизированного пользователя. Доступны два типа аккаунтов: бесплатные и платные. На бесплатном аккаунте может быть один приватный образ и бесконечное количество общедоступных образов.</p>
+<p>Команда для создания образа:<br />
+docker build . -t test-curl</p>
+<p>docker bulid — создает новый локальный образ.
+-t — устанавливает именную метку для образа.</p>
+<p>Стайлгайды Docker  </p>
+<pre><code>• 1 приложение = 1 контейнер.
+• Запускайте процесс на переднем плане (не используйте systemd, upstart или другие похожие инструменты).
+• Для хранения данных вне контейнера используйте тома.
+• Не иcпользуйте SSH (если вам надо залезть внутрь контейнера, используйте docker exec).
+• Избегайте ручных настроек или действий внутри контейнера.
+• Включайте только необходимый контекст — используйте .dockerignore файл (как .gitignore в git).
+• Избегайте установки ненужных пакетов — это займет лишнее дисковое пространство.
+• Используйте кэш. Добавьте контекст, который часто меняется, например, исходный код вашего проекта, в конец Dockerfile — кэш Docker будет использоваться более эффективно.
+• Будьте осторожны с томами. Вы должны помнить, какие данные находятся в томах. Поскольку тома постоянны и не исчезают вместе с контейнерами, следующий контейнер будет использовать данные, которые были созданы предыдущим контейнером.
+• Используйте переменные окружения: RUN, EXPOSE, VOLUME. Это сделает ваш Dockerfile более гибким.
+</code></pre>
+<p>Healthcheck -  Проверка состояния/работоспособности. Основная задача healthcheck’а – как можно скорее уведомить среду, управляющую контейнером, о том, что с контейнером что-то не так. И самая простая стратегия решения проблемы – перезапуск контейнера.
+Так же стоит сразу позаботиться об ограничении ресурсов для контейнера с БД. Для экспериментов и локального запуска вполне подойдёт секция resources.</p>
+<p>В современной разработке любой микросервис или инфраструктурный компонент должен быть поставлен на мониторинг, то есть непрерывно отдавать метрики - ключевые показатели, позволяющие определить, как ведёт себя система в данный момент времени.
+PostgreSQL не имеет встроенной интеграции с системами мониторинга наподобие Prometheus (или Zabbix). Вместо этого он полагает</p>
+<h2 id="_2">Использованные технологии</h2>
+<table>
+<thead>
+<tr>
+<th>Технология</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Docker</td>
+<td>упаковка приложений в контейнеры</td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td>запуск нескольких сервисов одной командой</td>
+</tr>
+<tr>
+<td>FastAPI</td>
+<td>основное API и API сервиса парсера</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>общая база данных</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>брокер сообщений для очереди задач</td>
+</tr>
+<tr>
+<td>Celery</td>
+<td>фоновая обработка задач парсинга</td>
+</tr>
+<tr>
+<td>requests</td>
+<td>HTTP-запросы между сервисами и загрузка страниц</td>
+</tr>
+<tr>
+<td>BeautifulSoup</td>
+<td>извлечение заголовка HTML-страницы</td>
+</tr>
+<tr>
+<td>Alembic</td>
+<td>применение миграций базы данных</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker-compose">Сервисы Docker Compose</h2>
+<p>В docker-compose.yml описаны следующие сервисы:</p>
+<h3 id="_3">Таблица сервисов проекта</h3>
+<table>
+<thead>
+<tr>
+<th>Сервис</th>
+<th>Назначение</th>
+<th>Порт (host:container)</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>tm_postgres</strong></td>
+<td>PostgreSQL 16 — база данных проекта</td>
+<td><code>5432:5432</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>tm_api</strong></td>
+<td>FastAPI тайм-менеджер: CRUD задач, категорий, тегов, JWT-авторизация, фронтенд, проксирование запросов к парсеру</td>
+<td><code>8000:8000</code></td>
+<td>http://localhost:8000</td>
+</tr>
+<tr>
+<td><strong>tm_parser</strong></td>
+<td>FastAPI-обёртка парсера: приём URL, парсинг HTML, сохранение <code>&lt;title&gt;</code> и метаданных в БД от имени пользователя <code>parser</code></td>
+<td><code>8001:8001</code></td>
+<td>http://localhost:8001</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Порты для подключения извне</h2>
+<table>
+<thead>
+<tr>
+<th>Что</th>
+<th>Адрес</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Фронтенд / API</td>
+<td>http://localhost:8000</td>
+</tr>
+<tr>
+<td>Swagger API</td>
+<td>http://localhost:8000/docs</td>
+</tr>
+<tr>
+<td>Swagger Parser</td>
+<td>http://localhost:8001/docs</td>
+</tr>
+<tr>
+<td>PostgreSQL (psql, DBeaver)</td>
+<td><code>localhost:5432</code></td>
+</tr>
+<tr>
+<td>Parser напрямую</td>
+<td>http://localhost:8001</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-docker">Подзадача 1. Упаковка в Docker</h2>
+<p>Были созданы Dockerfile для:</p>
+<p>основного FastAPI-приложения;
+сервиса парсера;
+Celery worker.
+Также был создан общий docker-compose.yml, который запускает все необходимые сервисы одной командой:</p>
+<p>docker compose up --build
+При запуске основного приложения автоматически выполняются миграции Alembic.</p>
+<p>Docker-compose.yml:</p>
+<pre><code class="language-Bash"># time-manager-app/docker-compose.yml
+version: &quot;3.9&quot;
+
+services:
+  # ============================================================
+  # PostgreSQL
+  # ============================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: tm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - &quot;5432:5432&quot;
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}&quot;]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tm_network
+
+  # ============================================================
+  # FastAPI (тайм-менеджер)
+  # ============================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: tm_api
+    restart: unless-stopped
+    environment:
+      # Внутри контейнера DB_HOST=postgres (имя сервиса)
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+    ports:
+      - &quot;8000:8000&quot;
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tm_network
+
+  # ============================================================
+  # Parser (FastAPI-обёртка)
+  # ============================================================
+  parser:
+    build:
+      context: .
+      dockerfile: Dockerfile.parser
+    container_name: tm_parser
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - &quot;8001:8001&quot;
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tm_network
+
+volumes:
+  postgres_data:
+
+networks:
+  tm_network:
+    driver: bridge
+</code></pre>
+<h3 id="_5">Ключевые моменты:</h3>
+<p>DB_HOST: postgres — жёстко прописан для контейнеров api и parser. Это перекрывает значение из app/.env (localhost), потому что Docker передаёт переменные через environment, и os.getenv("DB_HOST") вернёт postgres.</p>
+<p>${POSTGRES_USER} и т.д. — подставляются из time-manager-app/.env (Docker Compose читает .env из текущей директории автоматически).</p>
+<p>postgres_data — именованный volume, чтобы данные БД сохранялись между перезапусками.</p>
+<p>depends_on: condition: service_healthy — api и parser ждут, пока postgres реально станет доступен.</p>
+<h2 id="2-fastapi-http">Подзадача 2. Вызов парсера из FastAPI по HTTP</h2>
+<h3 id="_6">Запуск</h3>
+<p>Команды для запуска:</p>
+<pre><code class="language-Bash"># Собрать и запустить
+docker compose up --build
+
+# Или в фоне
+docker compose up -d --build
+
+# Логи
+docker compose logs -f api
+docker compose logs -f parser
+
+# Остановить
+docker compose down
+
+# Остановить и удалить данные БД
+docker compose down -v
+</code></pre>
+<p>docker compose up --build
+<img width="1328" height="467" alt="image" src="https://github.com/user-attachments/assets/c29d837b-4ba7-4cca-b055-2b4c623e0ddf" /></p>
+<p>Docker Compose читает time-manager-app/.env:</p>
+<p>text
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=135papin
+POSTGRES_DB=time_management_db
+SECRET_KEY=135papin
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+DB_HOST=postgres
+...
+Запускает контейнер postgres с POSTGRES_* — создаётся БД time_management_db с пользователем postgres и паролем 135papin.</p>
+<p>Запускает контейнер api с environment:</p>
+<p>text
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=time_management_db
+DB_USER=postgres
+DB_PASSWORD=135papin
+SECRET_KEY=135papin
+...
+Внутри api load_dotenv() ничего не находит (.env не скопирован), и os.getenv("DB_HOST") возвращает postgres из environment.</p>
+<p>app/database.py строит DSN:</p>
+<p>text
+postgresql://postgres:135papin@postgres:5432/time_management_db
+Docker DNS резолвит postgres в IP контейнера postgres.</p>
+<p>Подключение работает.
+<img width="1486" height="308" alt="image" src="https://github.com/user-attachments/assets/ca75a287-8b0c-4bb9-bc5b-688b37a00432" /></p>
+<p>Теперь можно добавить эндпоинт для вызова парсера
+Раз оба контейнера работают и в одной Docker-сети, api может обращаться к parser по имени parser:8001. Добавим интеграцию.
+Добавлен новый маршрут в app/routes/parser.py:</p>
+<pre><code class="language-Python"># app/routes/parser.py
+import os
+import httpx
+from fastapi import APIRouter, Depends, HTTPException, status
+from app import schemas, models
+from app.routes.auth import get_current_user
+
+router = APIRouter(prefix=&quot;/parser&quot;, tags=[&quot;parser&quot;])
+
+PARSER_URL = os.getenv(&quot;PARSER_URL&quot;, &quot;http://parser:8001&quot;)
+
+
+@router.post(&quot;/parse&quot;, response_model=schemas.ParseUrlResponse)
+async def parse_url(
+    payload: schemas.ParseUrlRequest,
+    current_user: models.User = Depends(get_current_user),
+):
+    &quot;&quot;&quot;Проксирует запрос к сервису парсера.&quot;&quot;&quot;
+    try:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.post(
+                f&quot;{PARSER_URL}/parse&quot;,
+                json={&quot;url&quot;: payload.url, &quot;save_to_db&quot;: payload.save_to_db},
+            )
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=response.text,
+            )
+        return response.json()
+    except httpx.ConnectError as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f&quot;Parser service unavailable: {e}&quot;,
+        )
+    except httpx.TimeoutException:
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail=&quot;Parser service timed out&quot;,
+        )
+
+
+@router.get(&quot;/health&quot;)
+async def parser_health():
+    &quot;&quot;&quot;Проверяет доступность парсера из API.&quot;&quot;&quot;
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f&quot;{PARSER_URL}/health&quot;)
+        return {
+            &quot;parser_url&quot;: PARSER_URL,
+            &quot;status_code&quot;: response.status_code,
+            &quot;body&quot;: response.json(),
+        }
+    except httpx.HTTPError as e:
+        return {
+            &quot;parser_url&quot;: PARSER_URL,
+            &quot;status&quot;: &quot;unavailable&quot;,
+            &quot;error&quot;: str(e),
+        }
+</code></pre>
+<h3 id="_7">Проверка</h3>
+<p>Проверка
+1. Контейнеры запущены
+powershell
+docker compose ps
+Должны быть три контейнера со статусом Up (healthy).
+<img width="1697" height="444" alt="image" src="https://github.com/user-attachments/assets/98c5c140-4372-453f-939f-0a584655ac5d" /></p>
+<p>Команды, чтобы пересобрать api:
+docker compose build --no-cache api</p>
+<p>Команда для запуска контейнера и результат:
+docker compose up -d</p>
+<p><img width="1703" height="317" alt="image" src="https://github.com/user-attachments/assets/a59fcc93-1652-49ce-95c5-c15b7c33579d" />
+<img width="1690" height="283" alt="image" src="https://github.com/user-attachments/assets/d726b917-0054-4b0d-b0ff-fcfd08942625" /></p>
+<ol>
+<li>Логи api
+powershell
+docker compose logs api
+Должно быть что-то вроде:</li>
+</ol>
+<p>text
+INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     Application startup complete.
+Никаких fe_sendauth: no password supplied.</p>
+<ol>
+<li>Логи parser
+powershell
+docker compose logs parser
+Должно быть:</li>
+</ol>
+<p>text
+[Конфиг] .env не найден — используются переменные окружения
+Подключение к БД: postgresql://postgres:****@postgres:5432/time_management_db
+Обратите внимание: @postgres:5432, а не @localhost:5432.</p>
+<ol>
+<li>
+<p>Проверка изнутри контейнера
+powershell
+docker compose exec api python -c "import os; print(os.getenv('DB_HOST'))"
+Должно вывести postgres.</p>
+</li>
+<li>
+<p>Проверка API
+powershell
+curl http://localhost:8000/health
+curl http://localhost:8001/health</p>
+</li>
+</ol>
+<p><img width="1859" height="890" alt="image" src="https://github.com/user-attachments/assets/f27fc20b-06a5-4136-b0e5-1f9664f32597" /></p>
+<ol>
+<li>
+<p>Проверка БД
+powershell
+docker compose exec postgres psql -U postgres -d time_management_db -c "\dt"
+<img width="665" height="474" alt="image" src="https://github.com/user-attachments/assets/b04e02a8-b769-46b0-97f4-c4e5f7a25435" /></p>
+</li>
+<li>
+<p>Проверка парсера</p>
+</li>
+</ol>
+<pre><code># Логин
+curl -X POST http://localhost:8000/auth/login `
+  -H &quot;Content-Type: application/x-www-form-urlencoded&quot; `
+  -d &quot;username=user@example.com&amp;password=yourpassword&quot;
+
+# Парсинг (подставьте токен)
+curl -X POST http://localhost:8000/parser/parse `
+  -H &quot;Authorization: Bearer &lt;access_token&gt;&quot; `
+  -H &quot;Content-Type: application/json&quot; `
+  -d '{\&quot;url\&quot;: \&quot;https://example.com\&quot;, \&quot;save_to_db\&quot;: true}'
+</code></pre>
+<p>Результат:
+<img width="1804" height="655" alt="image" src="https://github.com/user-attachments/assets/50084d54-0c80-4aee-81e5-6db8933f3f00" />
+<img width="1762" height="852" alt="image" src="https://github.com/user-attachments/assets/b61e0d35-8bf2-4115-b425-66926c0a73b3" /></p>
+<p>Данные корректно сохраняются в БД:
+<img width="1709" height="230" alt="image" src="https://github.com/user-attachments/assets/2a482f2f-b8f2-4845-bca6-ac477dfd9e5f" /></p>
+<p>Проверка созданных тегов:
+docker compose exec postgres psql -U postgres -d time_management_db -c "SELECT id, name, user_id FROM tags WHERE user_id = (SELECT id FROM users WHERE username='parser') LIMIT 10;"
+<img width="1708" height="238" alt="image" src="https://github.com/user-attachments/assets/b8af6fe4-b3ea-4615-8855-662cc840d795" /></p>
+<h2 id="_8">Вывод</h2>
+<p>В третьей лабораторной работе FastAPI-приложение, база данных, парсер были упакованы в Docker Compose. Основное приложение может вызывать парсер напрямую по HTTP или ставить задачу парсинга в очередь. Все сервисы используют одну общую PostgreSQL-базу данных, что соответствует замечанию о недопустимости создания отдельной базы для каждого микросервиса.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
