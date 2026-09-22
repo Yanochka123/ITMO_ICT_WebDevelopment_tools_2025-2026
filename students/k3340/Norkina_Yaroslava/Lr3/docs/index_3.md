@@ -405,5 +405,80 @@ curl -X POST http://localhost:8000/parser/parse `
 docker compose exec postgres psql -U postgres -d time_management_db -c "SELECT id, name, user_id FROM tags WHERE user_id = (SELECT id FROM users WHERE username='parser') LIMIT 10;"
 <img width="1708" height="238" alt="image" src="https://github.com/user-attachments/assets/b8af6fe4-b3ea-4615-8855-662cc840d795" />
 
+
+## Подзадача 3: Вызов парсера из FastAPI через очередь
+
+Были добавлены зависимости для Celery и Redis в проект и создан файл конфигурации для Celery.
+Затем были добавлены сервисы для Redis и Celery worker в docker-compose.yml.
+Также добавлен в FastAPI приложение маршрут для асинхронного вызова парсера. 
+
+Взаимодействие сервисов работает следующим образом:
+
+text
+1. Client → POST /parser/parse/async
+                ↓
+2. api → parse_url_task.delay(url) → Redis (очередь)
+                ↓
+3. celery_worker подхватывает задачу из Redis
+                ↓
+4. celery_worker → POST http://parser:8001/parse
+                ↓
+5. parser сохраняет в PostgreSQL
+                ↓
+6. celery_worker кладёт результат в Redis (backend)
+                ↓
+7. Client → GET /parser/task/{task_id} → api → Redis → результат
+
+
+### Проверка
+1. Запуск
+``` powershell
+docker compose down
+docker compose up -d --build
+docker compose ps
+```
+
+Запущено 5 контейнеров:
+text
+tm_postgres    Up (healthy)
+tm_redis       Up (healthy)
+tm_parser      Up (healthy)
+tm_api         Up (healthy)
+tm_celery      Up
+
+
+2. Логи Celery
+powershell
+docker compose logs celery_worker
+
+
+text
+[tasks]
+  . parse_url
+[2026-09-22 ...] celery@... ready.  
+
+3. Проверка Redis
+powershell
+docker compose exec redis redis-cli ping
+# → PONG
+
+4. Асинхронный парсинг
+powershell
+curl -X POST http://localhost:8000/parser/parse/async `
+  -H "Authorization: Bearer <токен>" `
+  -H "Content-Type: application/json" `
+  -d '{\"url\": \"https://github.com/features/actions\", \"save_to_db\": true}'
+Ответ:
+json
+{
+  "task_id": "a1b2c3d4-...",
+  "status": "queued",
+  "message": "Task queued for https://github.com/features/actions"
+}
+
+Результат:
+![alt text](image.png)
+![alt text](image-1.png)
+
 ## Вывод
 В третьей лабораторной работе FastAPI-приложение, база данных, парсер были упакованы в Docker Compose. Основное приложение может вызывать парсер напрямую по HTTP или ставить задачу парсинга в очередь. Все сервисы используют одну общую PostgreSQL-базу данных, что соответствует замечанию о недопустимости создания отдельной базы для каждого микросервиса.
