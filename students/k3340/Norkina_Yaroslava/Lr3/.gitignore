@@ -1,8 +1,3 @@
-# Игнорируем конкретные папки внутри time-management-app
-time-management-app/project/
-time-management-app/app/
-time-management-app/static/
-
 # Игнорируем виртуальное окружение где угодно
 f_api_env/
 venv/
