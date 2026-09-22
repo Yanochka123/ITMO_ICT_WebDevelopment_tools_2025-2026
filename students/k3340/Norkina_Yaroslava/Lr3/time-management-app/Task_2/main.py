@@ -59,11 +59,22 @@ def health():
     return {"status": "ok", "service": "parser"}
 
 
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+}
+
 @app.post("/parse", response_model=ParseResponse)
 def parse_url(payload: ParseRequest):
     """Спарсить одну страницу и (опционально) сохранить в БД."""
     try:
-        with httpx.Client(timeout=15, follow_redirects=True) as client:
+        with httpx.Client(timeout=60, follow_redirects=True, headers=HEADERS) as client:
             response = client.get(payload.url)
             response.raise_for_status()
             html = response.text
@@ -100,7 +111,7 @@ def parse_batch(payload: BatchParseRequest, background_tasks: BackgroundTasks):
 
 
 def _run_batch(urls: List[str], save_to_db: bool):
-    with httpx.Client(timeout=15, follow_redirects=True) as client:
+    with httpx.Client(timeout=60, follow_redirects=True, headers=HEADERS) as client:
         for url in urls:
             try:
                 response = client.get(url)

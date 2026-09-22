@@ -1,0 +1,139 @@
+# docker-compose.v2.yml
+services:
+  # ============================================================
+  # PostgreSQL v2 (порт 5433, свой volume)
+  # ============================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: tm2_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5433:5432"                    # ← наружу 5433
+    volumes:
+      - postgres_data_v2:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tm2_network
+
+  # ============================================================
+  # Redis v2
+  # ============================================================
+  redis:
+    image: redis:7-alpine
+    container_name: tm2_redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"                    # ← наружу 6380
+    volumes:
+      - redis_data_v2:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tm2_network
+
+  # ============================================================
+  # Parser v2
+  # ============================================================
+  parser:
+    build:
+      context: .
+      dockerfile: Dockerfile.parser
+    container_name: tm2_parser
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8011:8001"                    # ← наружу 8011
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tm2_network
+
+  # ============================================================
+  # Celery worker v2
+  # ============================================================
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: tm2_celery
+    restart: unless-stopped
+    command: celery -A app.celery_app.celery_app worker --loglevel=info --concurrency=2
+    healthcheck:
+      disable: true  
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      PARSER_URL: http://parser:8001
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+      parser:
+        condition: service_started
+    networks:
+      - tm2_network
+    
+
+  # ============================================================
+  # API v2
+  # ============================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: tm2_api
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      PARSER_URL: http://parser:8001
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8010:8000"                    # ← наружу 8010
+    depends_on:
+      postgres:
+        condition: service_healthy
+      parser:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - tm2_network
+
+volumes:
+  postgres_data_v2:
+  redis_data_v2:
+
+networks:
+  tm2_network:
+    driver: bridge
+    name: tm2_network
